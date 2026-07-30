@@ -1,0 +1,50 @@
+export type SessionStatus = "draft" | "active" | "reflecting" | "completed";
+
+export type ConfidenceLevel = "low" | "medium" | "high";
+
+export type ResearchSession = {
+  id: string;
+  userId: string;
+  topicId: string;
+  challengeId: string;
+  status: SessionStatus;
+  durationMinutes: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Source = {
+  id: string;
+  sessionId: string;
+  title: string;
+  url: string;
+  note?: string;
+  createdAt: string;
+};
+
+export type KeyClaim = {
+  id: string;
+  sessionId: string;
+  claim: string;
+  sourceId?: string;
+  confidenceLevel: ConfidenceLevel;
+  createdAt: string;
+};
+
+export type Reflection = {
+  learned: string;
+  surprised: string;
+  unclear: string;
+  confidenceBefore: number;
+  confidenceAfter: number;
+};
+
+export type ResearchSessionReviewInput = {
+  topic: string;
+  challenge: string;
+  notes: string;
+  sources: string[];
+  reflection: string;
+};
