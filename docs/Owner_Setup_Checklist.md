@@ -59,18 +59,20 @@ Production redirect URL can be added after deployment.
 
 ---
 
-## 3. OpenAI
+## 3. OpenRouter
 
-Create or use an OpenAI platform account.
+Create or use an OpenRouter account.
 
 You will need:
 
-- `OPENAI_API_KEY`
+- `OPENROUTER_API_KEY`
+- `OPENROUTER_MODEL`
 
 Add it to `.env.local`:
 
 ```bash
-OPENAI_API_KEY=
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=openrouter/free
 ```
 
 MVP usage:

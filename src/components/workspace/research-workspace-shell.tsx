@@ -6,12 +6,16 @@ import { FormEvent, useEffect, useRef, useState, useTransition } from "react";
 import {
   Brain,
   CheckCircle2,
+  CircleAlert,
   CircleStop,
   Clock3,
   Coffee,
+  Compass,
   ExternalLink,
   Info,
   Library,
+  LoaderCircle,
+  MessageCircleQuestion,
   Pencil,
   Plus,
   Sparkles,
@@ -29,6 +33,7 @@ import {
   deleteSource,
   endMidpointBreak,
   finishFocusEarly,
+  generateAiReview,
   takeMidpointBreak,
   submitReflection,
   updateKeyClaim,
@@ -41,10 +46,12 @@ import {
   type NoteAttachment
 } from "@/components/workspace/handwritten-note-upload";
 import { RichTextNotes } from "@/components/workspace/rich-text-notes";
+import type { AiReview } from "@/lib/ai/review";
 import type { ResearchDifficulty } from "@/lib/topics";
 import type { JSONContent } from "@tiptap/react";
 
 type ResearchWorkspaceShellProps = {
+  initialAiReview: AiReview | null;
   initialAttachments: NoteAttachment[];
   initialKeyClaims: Array<{
     id: string;
@@ -88,6 +95,7 @@ type ResearchWorkspaceShellProps = {
 };
 
 export function ResearchWorkspaceShell({
+  initialAiReview,
   initialAttachments,
   initialKeyClaims,
   initialNotes,
@@ -104,6 +112,9 @@ export function ResearchWorkspaceShell({
   const movedToReflectionRef = useRef(false);
   const autosaveTimeoutRef = useRef<number | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isAiReviewPending, startAiReviewTransition] = useTransition();
+  const [aiReview, setAiReview] = useState<AiReview | null>(initialAiReview);
+  const [aiFailureMessage, setAiFailureMessage] = useState("");
   const [notes, setNotes] = useState(initialNotes);
   const [notesJson, setNotesJson] = useState<JSONContent | undefined>(
     initialNotesJson &&
@@ -237,7 +248,7 @@ export function ResearchWorkspaceShell({
     { label: "Add notes", complete: hasNotes },
     { label: "Add one source", complete: hasSources },
     { label: "Reflect", complete: hasReflection },
-    { label: "Review AI feedback", complete: false }
+    { label: "Review AI feedback", complete: Boolean(aiReview) }
   ];
 
   function saveNotes() {
@@ -519,6 +530,61 @@ export function ResearchWorkspaceShell({
 
       if (result.ok) {
         router.refresh();
+      }
+    });
+  }
+
+  function requestAiReview() {
+    if (!focusEnded || !hasReflection) {
+      setMessage("Finish focus and complete all reflection questions before requesting AI review.");
+      reflectionSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+      return;
+    }
+
+    setAiFailureMessage("");
+    startAiReviewTransition(async () => {
+      setMessage("Preparing your AI review…");
+      const notesResult = await autosaveNotes({
+        sessionId: session.id,
+        content: notes,
+        contentJson: notesJson
+      });
+
+      if (!notesResult.ok) {
+        setMessage(notesResult.message);
+        return;
+      }
+
+      const reflectionResult = await submitReflection({
+        sessionId: session.id,
+        learned,
+        surprised,
+        unclear,
+        confidenceBefore,
+        confidenceAfter
+      });
+
+      if (!reflectionResult.ok) {
+        setMessage(reflectionResult.message);
+        reflectionSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+        return;
+      }
+
+      const result = await generateAiReview({ sessionId: session.id });
+      setMessage(result.message);
+
+      if (result.ok && result.review) {
+        setAiReview(result.review);
+        setAiFailureMessage("");
+        router.refresh();
+      } else if (result.fallback) {
+        setAiFailureMessage(result.message);
       }
     });
   }
@@ -1124,11 +1190,123 @@ export function ResearchWorkspaceShell({
                   AI Coach
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-sm text-muted-foreground">
-                <p>Your saved session will become the context for AI feedback in the next slice.</p>
-                <Button className="w-full" disabled variant="secondary">
-                  AI review coming next
-                </Button>
+              <CardContent className="space-y-4 text-sm">
+                {aiReview ? (
+                  <>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                        Session Summary
+                      </p>
+                      <p className="mt-2 leading-6 text-muted-foreground">{aiReview.summary}</p>
+                    </div>
+                    <div>
+                      <p className="flex items-center gap-2 font-semibold">
+                        <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
+                        Strengths
+                      </p>
+                      <ul className="mt-2 space-y-2 text-muted-foreground">
+                        {aiReview.strengths.map((strength) => (
+                          <li className="flex gap-2" key={strength}>
+                            <span aria-hidden="true">•</span>
+                            <span>{strength}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="flex items-center gap-2 font-semibold">
+                        <CircleAlert className="h-4 w-4 text-accent-foreground" aria-hidden="true" />
+                        Gaps to explore
+                      </p>
+                      <ul className="mt-2 space-y-2 text-muted-foreground">
+                        {aiReview.gaps.map((gap) => (
+                          <li className="flex gap-2" key={gap}>
+                            <span aria-hidden="true">•</span>
+                            <span>{gap}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="flex items-center gap-2 font-semibold">
+                        <MessageCircleQuestion className="h-4 w-4 text-primary" aria-hidden="true" />
+                        Follow-up questions
+                      </p>
+                      <ol className="mt-2 list-decimal space-y-2 pl-5 text-muted-foreground">
+                        {aiReview.followUpQuestions.map((question) => (
+                          <li key={question}>{question}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div>
+                      <p className="flex items-center gap-2 font-semibold">
+                        <Compass className="h-4 w-4 text-primary" aria-hidden="true" />
+                        Explore next
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {aiReview.suggestedTopics.map((suggestedTopic) => (
+                          <span
+                            className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
+                            key={suggestedTopic}
+                          >
+                            {suggestedTopic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <Button
+                      className="w-full"
+                      disabled={isAiReviewPending}
+                      onClick={requestAiReview}
+                      type="button"
+                      variant="secondary"
+                    >
+                      {isAiReviewPending ? (
+                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                      ) : null}
+                      Refresh review
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="leading-6 text-muted-foreground">
+                      Curio will review your notes and reflection, then highlight strengths,
+                      knowledge gaps, follow-up questions, and related topics.
+                    </p>
+                    {!focusEnded ? (
+                      <p className="text-xs text-muted-foreground">
+                        AI review unlocks when focus ends.
+                      </p>
+                    ) : !hasReflection ? (
+                      <p className="text-xs text-muted-foreground">
+                        Complete all three reflection questions to unlock your review.
+                      </p>
+                    ) : null}
+                    {aiFailureMessage ? (
+                      <div className="border-l-4 border-accent bg-accent/20 px-3 py-2 text-muted-foreground">
+                        {aiFailureMessage}
+                      </div>
+                    ) : null}
+                    <Button
+                      className="w-full"
+                      disabled={isAiReviewPending || !focusEnded || !hasReflection}
+                      onClick={requestAiReview}
+                      type="button"
+                      variant="secondary"
+                    >
+                      {isAiReviewPending ? (
+                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
+                      )}
+                      {isAiReviewPending ? "Reviewing session…" : "Generate AI review"}
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      AI feedback is optional. You can finish and save the session if it is
+                      unavailable.
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           </aside>

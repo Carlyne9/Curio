@@ -11,6 +11,12 @@ type WorkspacePageProps = {
   }>;
 };
 
+function toStringArray(value: unknown) {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
+}
+
 export default async function WorkspacePage({ searchParams }: WorkspacePageProps) {
   const { error: pageError } = await searchParams;
   const supabase = await createClient();
@@ -80,6 +86,7 @@ export default async function WorkspacePage({ searchParams }: WorkspacePageProps
     { data: sources },
     { data: keyClaims },
     { data: reflection },
+    { data: aiFeedback },
     { data: attachments },
     { data: topic },
     { data: challenge }
@@ -106,6 +113,11 @@ export default async function WorkspacePage({ searchParams }: WorkspacePageProps
         .eq("session_id", session.id)
         .maybeSingle(),
       supabase
+        .from("ai_feedback")
+        .select("summary, strengths, gaps, follow_up_questions, suggested_topics")
+        .eq("session_id", session.id)
+        .maybeSingle(),
+      supabase
         .from("note_attachments")
         .select("id, storage_path, file_name, mime_type, size_bytes")
         .eq("session_id", session.id)
@@ -128,6 +140,17 @@ export default async function WorkspacePage({ searchParams }: WorkspacePageProps
 
   return (
     <ResearchWorkspaceShell
+      initialAiReview={
+        aiFeedback
+          ? {
+              summary: aiFeedback.summary,
+              strengths: toStringArray(aiFeedback.strengths),
+              gaps: toStringArray(aiFeedback.gaps),
+              followUpQuestions: toStringArray(aiFeedback.follow_up_questions),
+              suggestedTopics: toStringArray(aiFeedback.suggested_topics)
+            }
+          : null
+      }
       initialKeyClaims={keyClaims ?? []}
       initialAttachments={(attachments ?? []).map((attachment) => ({
         id: attachment.id,

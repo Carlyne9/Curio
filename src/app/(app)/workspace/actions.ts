@@ -1,9 +1,15 @@
 "use server";
 
+import { createHash } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import {
+  generateResearchSessionReview,
+  type AiReview
+} from "@/lib/ai/review";
+import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import {
   completeSessionSchema,
@@ -19,6 +25,11 @@ import {
 export type WorkspaceActionResult = {
   ok: boolean;
   message: string;
+};
+
+export type AiReviewActionResult = WorkspaceActionResult & {
+  fallback?: boolean;
+  review?: AiReview;
 };
 
 const startSessionSchema = z.object({
@@ -47,6 +58,10 @@ function validationError(error: z.ZodError): WorkspaceActionResult {
     ok: false,
     message: error.issues[0]?.message ?? "Check the information and try again."
   };
+}
+
+function truncateForReview(value: string, maxLength: number) {
+  return value.length > maxLength ? `${value.slice(0, maxLength)}…` : value;
 }
 
 async function authenticatedClient() {
@@ -689,8 +704,152 @@ export async function submitReflection(input: unknown): Promise<WorkspaceActionR
   return { ok: true, message: "Reflection saved." };
 }
 
-export async function generateAiReview(): Promise<WorkspaceActionResult> {
-  return { ok: false, message: "AI review is coming in the next MVP slice." };
+export async function generateAiReview(input: unknown): Promise<AiReviewActionResult> {
+  const parsed = timerSessionSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return validationError(parsed.error);
+  }
+
+  const { supabase, user } = await authenticatedClient();
+
+  if (!user) {
+    return { ok: false, message: "Log in again to request an AI review." };
+  }
+
+  if (!env.OPENROUTER_API_KEY) {
+    return {
+      ok: false,
+      fallback: true,
+      message: "AI review is not configured yet. Your work is saved, and you can finish without it."
+    };
+  }
+
+  const { data: session, error: sessionError } = await supabase
+    .from("research_sessions")
+    .select("topic_id, challenge_id")
+    .eq("id", parsed.data.sessionId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (sessionError || !session) {
+    return { ok: false, message: "This session could not be prepared for AI review." };
+  }
+
+  const [
+    { data: note },
+    { data: sources },
+    { data: keyClaims },
+    { data: reflection },
+    { data: topic },
+    { data: challenge }
+  ] = await Promise.all([
+    supabase
+      .from("notes")
+      .select("content_text")
+      .eq("session_id", parsed.data.sessionId)
+      .maybeSingle(),
+    supabase
+      .from("sources")
+      .select("title, note")
+      .eq("session_id", parsed.data.sessionId)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("key_claims")
+      .select("claim, confidence_level")
+      .eq("session_id", parsed.data.sessionId)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("reflections")
+      .select("learned, surprised, unclear, confidence_before, confidence_after")
+      .eq("session_id", parsed.data.sessionId)
+      .maybeSingle(),
+    session.topic_id
+      ? supabase.from("topics").select("title").eq("id", session.topic_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    session.challenge_id
+      ? supabase
+          .from("challenges")
+          .select("prompt")
+          .eq("id", session.challenge_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null })
+  ]);
+
+  if (!reflection) {
+    return { ok: false, message: "Save your reflection before requesting AI feedback." };
+  }
+
+  try {
+    const review = await generateResearchSessionReview({
+      topic: topic?.title ?? "Open research topic",
+      challenge: challenge?.prompt ?? "Review the learner's research session.",
+      notes: truncateForReview(note?.content_text ?? "No typed notes provided.", 20_000),
+      sources: (sources ?? []).map((source) =>
+        truncateForReview(
+          source.note ? `${source.title}: ${source.note}` : source.title,
+          600
+        )
+      ),
+      keyClaims: (keyClaims ?? []).map((keyClaim) =>
+        truncateForReview(
+          `${keyClaim.claim} (${keyClaim.confidence_level} confidence)`,
+          600
+        )
+      ),
+      reflection: JSON.stringify({
+        learned: reflection.learned,
+        surprised: reflection.surprised,
+        unclear: reflection.unclear,
+        confidenceBefore: reflection.confidence_before,
+        confidenceAfter: reflection.confidence_after
+      }),
+      safetyIdentifier: createHash("sha256")
+        .update(`curio:${user.id}`)
+        .digest("hex")
+    });
+
+    const { error: saveError } = await supabase.from("ai_feedback").upsert(
+      {
+        session_id: parsed.data.sessionId,
+        summary: review.summary,
+        strengths: review.strengths,
+        gaps: review.gaps,
+        follow_up_questions: review.followUpQuestions,
+        suggested_topics: review.suggestedTopics,
+        created_at: new Date().toISOString()
+      },
+      { onConflict: "session_id" }
+    );
+
+    if (saveError) {
+      return {
+        ok: false,
+        fallback: true,
+        message: "The review was generated but could not be saved. You can retry or finish without it."
+      };
+    }
+
+    revalidatePath("/workspace");
+    return { ok: true, message: "AI review ready.", review };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown AI review error";
+    console.error("AI review generation failed:", errorMessage);
+    const quotaUnavailable = /quota|billing|insufficient_quota|credits/i.test(errorMessage);
+    const freeModelUnavailable = /rate.?limit|429|temporarily unavailable|no endpoints/i.test(
+      errorMessage
+    );
+
+    return {
+      ok: false,
+      fallback: true,
+      message: quotaUnavailable
+        ? "AI review is unavailable because this OpenRouter account has no remaining credits. Add credits or switch to a free model, then retry."
+        : freeModelUnavailable
+          ? "The free AI model is busy right now. Your work is saved, so wait a moment and retry."
+          : "AI review is temporarily unavailable. Your work is saved, and you can finish without it."
+    };
+  }
 }
 
 export async function completeSession(input: unknown): Promise<WorkspaceActionResult> {

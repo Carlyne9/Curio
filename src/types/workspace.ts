@@ -48,5 +48,7 @@ export type ResearchSessionReviewInput = {
   challenge: string;
   notes: string;
   sources: string[];
+  keyClaims: string[];
   reflection: string;
+  safetyIdentifier: string;
 };
