@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import { logout } from "@/app/(auth)/actions";
+import { Button } from "@/components/ui/button";
+
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
@@ -9,7 +12,7 @@ const navigationItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/workspace", label: "Workspace" },
   { href: "/library", label: "Library" }
-];
+] as const;
 
 export function AppShell({ children, title }: AppShellProps) {
   return (
@@ -21,13 +24,20 @@ export function AppShell({ children, title }: AppShellProps) {
           </Link>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">{title}</h1>
         </div>
-        <nav className="flex gap-3 text-sm font-medium text-muted-foreground">
-          {navigationItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex flex-wrap items-center gap-3">
+          <nav className="flex gap-3 text-sm font-medium text-muted-foreground">
+            {navigationItems.map((item) => (
+              <Link key={item.href} href={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <form action={logout}>
+            <Button type="submit" variant="ghost">
+              Sign out
+            </Button>
+          </form>
+        </div>
       </header>
       <div className="space-y-6">{children}</div>
     </main>

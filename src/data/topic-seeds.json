@@ -1,0 +1,578 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-111111111101",
+    "title": "Why do stars have different colors?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111101",
+    "challenge": "Compare two explanations of stellar color and explain the relationship between temperature and light."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111102",
+    "title": "How does sleep reshape memory?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111102",
+    "challenge": "Find evidence for what the sleeping brain does with new memories and explain it without jargon."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111103",
+    "title": "Why do some diseases spread faster than others?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111103",
+    "challenge": "Identify three factors that affect disease spread and show how they interact."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111104",
+    "title": "What makes an ecosystem resilient?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111104",
+    "challenge": "Use one real ecosystem to explain how diversity and adaptation support recovery."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111105",
+    "title": "How do vaccines train the immune system?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111105",
+    "challenge": "Explain immune memory and compare how two vaccine types create protection."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111106",
+    "title": "Why do ocean currents shape climate?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111106",
+    "challenge": "Trace one major current and explain how it redistributes heat around the planet."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111107",
+    "title": "Can plants communicate with each other?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111107",
+    "challenge": "Compare chemical, fungal, and airborne signaling claims using evidence from plant research."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111108",
+    "title": "What causes the northern lights?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111108",
+    "challenge": "Follow energy from the Sun to the atmosphere and explain why auroras have different colors."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111109",
+    "title": "Why do antibiotics stop working?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111109",
+    "challenge": "Explain antibiotic resistance through natural selection and identify two ways to slow it."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111110",
+    "title": "How does the brain predict the world?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111110",
+    "challenge": "Investigate predictive processing and use one illusion to show how expectations affect perception."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "title": "What limits the human lifespan?",
+    "category": "Science",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111111",
+    "challenge": "Compare two biological theories of ageing and assess what current evidence supports."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111112",
+    "title": "Could life exist beyond Earth?",
+    "category": "Science",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111112",
+    "challenge": "Define the conditions scientists search for and evaluate one promising world beyond Earth."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111201",
+    "title": "Why does a chorus feel memorable?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111201",
+    "challenge": "Compare two memorable choruses and identify the musical patterns that help them stick."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111202",
+    "title": "How does rhythm change emotion?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111202",
+    "challenge": "Choose contrasting rhythms and explain how tempo, repetition, and syncopation affect feeling."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111203",
+    "title": "Why do some chords create tension?",
+    "category": "Music",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111203",
+    "challenge": "Explain consonance and dissonance through one song or composition you know."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111204",
+    "title": "How has recording technology changed music?",
+    "category": "Music",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111204",
+    "challenge": "Trace one recording innovation and show how it changed what musicians could create."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111205",
+    "title": "Why does bass change how music feels?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111205",
+    "challenge": "Compare the role of bass in two genres and explain its rhythmic and emotional effects."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111206",
+    "title": "What is perfect pitch?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111206",
+    "challenge": "Investigate how perfect pitch develops and whether training, language, or genetics matters most."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111207",
+    "title": "How does musical improvisation work?",
+    "category": "Music",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111207",
+    "challenge": "Study one improvisational tradition and explain how knowledge and spontaneity work together."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111208",
+    "title": "Why do instruments have different voices?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111208",
+    "challenge": "Use harmonics and timbre to explain why the same note sounds different across instruments."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111209",
+    "title": "Why can music unlock old memories?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111209",
+    "challenge": "Explore how music connects memory, emotion, and personal identity in the brain."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111210",
+    "title": "How does silence function in music?",
+    "category": "Music",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111210",
+    "challenge": "Analyze how pauses and silence create expectation in two contrasting compositions."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111211",
+    "title": "How do musical traditions evolve?",
+    "category": "Music",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111211",
+    "challenge": "Trace how one musical tradition changed through migration, technology, or cultural exchange."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111212",
+    "title": "Has streaming changed the shape of songs?",
+    "category": "Music",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111212",
+    "challenge": "Compare songs across eras and assess how streaming incentives affect length and structure."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111301",
+    "title": "Why do certain colors feel warm?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111301",
+    "challenge": "Compare cultural and perceptual explanations for warm and cool color associations."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111302",
+    "title": "How does negative space guide attention?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111302",
+    "challenge": "Analyze two artworks or designs where empty space changes what the viewer notices."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111303",
+    "title": "What makes an image feel balanced?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111303",
+    "challenge": "Compare symmetry and asymmetry in two images and explain why both can feel balanced."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111304",
+    "title": "Why do artistic styles repeat?",
+    "category": "Art",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111304",
+    "challenge": "Choose one revived artistic style and investigate why it returned in a new era."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111305",
+    "title": "How does perspective create depth?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111305",
+    "challenge": "Compare linear perspective with another depth technique across two artworks."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111306",
+    "title": "Why does texture matter in art?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111306",
+    "challenge": "Study how real and implied texture change the experience of two works."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111307",
+    "title": "What can a portrait reveal about identity?",
+    "category": "Art",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111307",
+    "challenge": "Compare two portraits and examine how pose, setting, and symbolism construct identity."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111308",
+    "title": "Why did artists turn to abstraction?",
+    "category": "Art",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111308",
+    "challenge": "Investigate one abstract movement and the problem its artists were trying to solve."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111309",
+    "title": "How does public art change a city?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111309",
+    "challenge": "Evaluate one public artwork through the perspectives of artists, residents, and officials."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111310",
+    "title": "How does typography create mood?",
+    "category": "Art",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111310",
+    "challenge": "Compare how type choices alter the tone and trustworthiness of the same message."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111311",
+    "title": "Can photography tell the truth?",
+    "category": "Art",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111311",
+    "challenge": "Examine framing, selection, and editing in two photographs that claim to document reality."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111312",
+    "title": "How do museums shape the meaning of art?",
+    "category": "Art",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111312",
+    "challenge": "Explore how labels, placement, and institutional history affect how one artwork is understood."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111401",
+    "title": "What makes an action morally right?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111401",
+    "challenge": "Apply two ethical frameworks to the same dilemma and compare their conclusions."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111402",
+    "title": "Can we know anything with certainty?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111402",
+    "challenge": "Compare skepticism with one response to it and state which argument you find stronger."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111403",
+    "title": "What gives a life meaning?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111403",
+    "challenge": "Compare two philosophical views of meaning and test them against an everyday life."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111404",
+    "title": "Are we the same person over time?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111404",
+    "challenge": "Explore memory, body, and continuity theories through one identity thought experiment."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111405",
+    "title": "Do we really have free will?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111405",
+    "challenge": "Compare determinism and compatibilism, then test both against an everyday decision."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111406",
+    "title": "Is fairness the same as equality?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111406",
+    "challenge": "Apply equality, equity, and need-based fairness to one real allocation problem."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111407",
+    "title": "What is consciousness?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111407",
+    "challenge": "Compare two theories of consciousness and identify what evidence could distinguish them."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111408",
+    "title": "Is beauty in the eye of the beholder?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111408",
+    "challenge": "Compare subjective and objective accounts of beauty using one disputed artwork."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111409",
+    "title": "What makes authority legitimate?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111409",
+    "challenge": "Compare consent, justice, and effectiveness as grounds for political authority."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111410",
+    "title": "What do we owe future generations?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111410",
+    "challenge": "Use climate or technology policy to compare duties to present and future people."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111411",
+    "title": "Can truth be relative?",
+    "category": "Philosophy",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111411",
+    "challenge": "Distinguish disagreement, perspective, and relativism through a concrete example."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111412",
+    "title": "Does technology help us live well?",
+    "category": "Philosophy",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111412",
+    "challenge": "Evaluate one everyday technology through two different ideas of the good life."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111501",
+    "title": "How do recommendation systems shape taste?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111501",
+    "challenge": "Map how one recommendation system learns from behavior and influences future choices."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111502",
+    "title": "Why does encryption protect privacy?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111502",
+    "challenge": "Explain public-key encryption with a simple analogy, then identify where the analogy breaks."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111503",
+    "title": "What makes an interface feel intuitive?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111503",
+    "challenge": "Compare two interfaces and identify the cues that reduce the amount users must remember."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111504",
+    "title": "How could AI change creative work?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111504",
+    "challenge": "Find evidence for one opportunity and one risk, then form your own position."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111505",
+    "title": "How does the internet find the right destination?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111505",
+    "challenge": "Trace a web request through names, addresses, routers, and servers."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111506",
+    "title": "Why do passwords keep failing us?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111506",
+    "challenge": "Compare passwords, password managers, passkeys, and multi-factor authentication."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111507",
+    "title": "How does blockchain create trust?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111507",
+    "challenge": "Explain consensus without jargon and identify where blockchain is—and is not—useful."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111508",
+    "title": "What makes software scale?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111508",
+    "challenge": "Study one high-traffic system and identify how it handles growth and failure."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111509",
+    "title": "How does data compression work?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111509",
+    "challenge": "Compare lossless and lossy compression using text, images, or sound."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111510",
+    "title": "Why does accessibility improve technology?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111510",
+    "challenge": "Trace one accessibility feature from a specific need to broader everyday usefulness."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111511",
+    "title": "Why does open-source software work?",
+    "category": "Technology",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111511",
+    "challenge": "Study one open-source project and explain how contribution, governance, and funding interact."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111512",
+    "title": "How will automation reshape work?",
+    "category": "Technology",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111512",
+    "challenge": "Compare historical automation with current AI adoption and identify what may be different."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111601",
+    "title": "Why do stories survive across generations?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111601",
+    "challenge": "Trace one enduring story and identify what changed—and what stayed stable—over time."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111602",
+    "title": "How do cities shape creativity?",
+    "category": "Culture",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111602",
+    "challenge": "Compare two cities and investigate how density, diversity, and institutions affect creative work."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111603",
+    "title": "Why do rituals strengthen communities?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111603",
+    "challenge": "Study one ritual and explain how repetition, symbols, and participation build belonging."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111604",
+    "title": "How does language shape thought?",
+    "category": "Culture",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111604",
+    "challenge": "Compare evidence for and against linguistic influence on perception or memory."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111605",
+    "title": "How does food carry identity?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111605",
+    "challenge": "Trace one dish across migration, memory, and changing ideas of authenticity."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111606",
+    "title": "What does fashion communicate?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111606",
+    "challenge": "Compare how one style signals belonging, status, resistance, or identity."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111607",
+    "title": "Why do cultures create myths?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111607",
+    "challenge": "Compare myths from two cultures and identify the problems each story helps people understand."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111608",
+    "title": "How does migration transform culture?",
+    "category": "Culture",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111608",
+    "challenge": "Follow one cultural practice across migration and examine what adapts, blends, or persists."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111609",
+    "title": "Why is humor different across cultures?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111609",
+    "challenge": "Compare what makes two cultures laugh and what gets lost when humor is translated."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111610",
+    "title": "Why do festivals endure?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111610",
+    "challenge": "Study one festival and explain how ritual, commerce, memory, and change coexist."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111611",
+    "title": "How do sports create belonging?",
+    "category": "Culture",
+    "difficulty": "Beginner",
+    "challengeId": "21111111-1111-4111-8111-111111111611",
+    "challenge": "Explore how one team or sport builds identity through symbols, stories, and shared emotion."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111612",
+    "title": "What changes when ideas are translated?",
+    "category": "Culture",
+    "difficulty": "Intermediate",
+    "challengeId": "21111111-1111-4111-8111-111111111612",
+    "challenge": "Compare translations of one idea and examine what each version preserves or transforms."
+  }
+]

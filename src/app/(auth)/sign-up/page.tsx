@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { signUp } from "@/app/(auth)/actions";
+import { AuthForm } from "@/components/auth/auth-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function SignUpPage() {
@@ -12,11 +13,17 @@ export default function SignUpPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Sign-up UI and Supabase Auth actions will be added after the static UX slice.
+            Start with one focused research session. Your library grows from there.
           </p>
-          <Button asChild className="w-full">
-            <Link href="/onboarding">Preview onboarding</Link>
-          </Button>
+          <AuthForm
+            action={signUp}
+            alternateHref="/login"
+            alternateLabel="Already have an account? Log in"
+            submitLabel="Create account"
+          />
+          <Link className="block text-center text-xs text-muted-foreground" href="/">
+            Back to home
+          </Link>
         </CardContent>
       </Card>
     </main>

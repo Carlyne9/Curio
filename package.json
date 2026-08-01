@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed:topics": "node --env-file=.env.local scripts/seed-topics.mjs",
+    "setup:storage": "node --env-file=.env.local scripts/setup-storage.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",

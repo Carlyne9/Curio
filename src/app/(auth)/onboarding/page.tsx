@@ -1,20 +1,24 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { TopicDiscovery } from "@/components/onboarding/topic-discovery";
+import { createClient } from "@/lib/supabase/server";
 
-export default function OnboardingPage() {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6">
-      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Onboarding</p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight">Build your first learning loop.</h1>
-      <p className="mt-4 text-lg leading-8 text-muted-foreground">
-        Curio will guide new users through choosing a topic, starting a timer, capturing notes, and reflecting before saving.
-      </p>
-      <div className="mt-8">
-        <Button asChild>
-          <Link href="/workspace">Start preview session</Link>
-        </Button>
-      </div>
-    </main>
-  );
+type OnboardingPageProps = {
+  searchParams: Promise<{
+    error?: string;
+  }>;
+};
+
+export default async function OnboardingPage({ searchParams }: OnboardingPageProps) {
+  const supabase = await createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { error } = await searchParams;
+  return <TopicDiscovery error={error} />;
 }

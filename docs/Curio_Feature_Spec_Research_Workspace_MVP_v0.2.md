@@ -49,11 +49,15 @@ A completed MVP session includes:
 #### Focus Timer
 
 - Start timer
-- Pause timer
-- Resume timer
+- Continue through refresh, tab switching, and device sleep
+- Offer one optional break at the halfway point
+- Break duration is 10% of the session, with a 2-minute minimum and 5-minute maximum
 - Finish early
+- Record actual focused duration when finishing early
+- Move automatically into reflection when time expires
+- Allow one optional 5-minute extension when time expires
 - Basic progress indicator
-- Default duration options: 25 and 50 minutes
+- Duration options from 10 to 60 minutes in 5-minute increments
 
 #### Notes Editor
 
@@ -485,7 +489,11 @@ Required actions:
 ## 14. Acceptance Criteria
 
 - User can enter the workspace from a selected topic.
-- User can start, pause, resume, and finish a timer.
+- User can start a timer that continues through refreshes and inactive tabs.
+- User is offered one optional midpoint break.
+- User can finish focus early without losing session work.
+- User moves into reflection when focus time expires.
+- User can add five minutes once after focus time expires.
 - User can write notes in a rich text editor.
 - Notes autosave and show save status.
 - User can add at least one source.

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const sessionIdSchema = z.string().uuid("The research session is invalid.");
+
 export const sourceSchema = z.object({
   title: z.string().min(1, "Add a source title."),
   url: z.string().url("Add a valid URL."),
@@ -22,6 +24,35 @@ export const reflectionSchema = z.object({
 
 export const completeSessionSchema = z.object({
   sessionId: z.string().uuid(),
-  reflection: reflectionSchema,
-  sourceCount: z.number().min(1, "Add at least one source before finishing.")
+});
+
+export const notesSchema = z.object({
+  sessionId: sessionIdSchema,
+  content: z.string().max(100_000, "Your notes are too long to save."),
+  contentJson: z.unknown().optional()
+});
+
+export const sourceInputSchema = sourceSchema.extend({
+  sessionId: sessionIdSchema
+});
+
+export const sourceMutationInputSchema = sourceInputSchema.extend({
+  sourceId: z.string().uuid("The source is invalid.")
+});
+
+export const keyClaimInputSchema = keyClaimSchema.extend({
+  sessionId: sessionIdSchema
+});
+
+export const keyClaimMutationInputSchema = keyClaimInputSchema.extend({
+  keyClaimId: z.string().uuid("The key claim is invalid.")
+});
+
+export const workspaceItemDeleteSchema = z.object({
+  sessionId: sessionIdSchema,
+  itemId: z.string().uuid("The workspace item is invalid.")
+});
+
+export const reflectionInputSchema = reflectionSchema.extend({
+  sessionId: sessionIdSchema
 });

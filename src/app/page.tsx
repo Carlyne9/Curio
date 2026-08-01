@@ -7,8 +7,8 @@ export default function HomePage() {
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10">
       <nav className="flex items-center justify-between">
         <span className="text-lg font-semibold">Curio</span>
-        <Link href="/dashboard" className="text-sm font-medium text-muted-foreground">
-          Enter prototype
+        <Link href="/login" className="text-sm font-medium text-muted-foreground">
+          Log in
         </Link>
       </nav>
 
@@ -24,10 +24,10 @@ export default function HomePage() {
         </p>
         <div className="mt-10 flex flex-wrap gap-3">
           <Button asChild>
-            <Link href="/workspace">Preview workspace</Link>
+            <Link href="/sign-up">Start learning</Link>
           </Button>
           <Button asChild variant="secondary">
-            <Link href="/dashboard">View dashboard</Link>
+            <Link href="/login">Open your library</Link>
           </Button>
         </div>
       </section>

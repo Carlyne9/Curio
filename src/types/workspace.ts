@@ -1,6 +1,7 @@
 export type SessionStatus = "draft" | "active" | "reflecting" | "completed";
 
 export type ConfidenceLevel = "low" | "medium" | "high";
+export type ResearchDifficulty = "beginner" | "intermediate" | "advanced";
 
 export type ResearchSession = {
   id: string;
@@ -9,6 +10,7 @@ export type ResearchSession = {
   challengeId: string;
   status: SessionStatus;
   durationMinutes: number;
+  difficultyLevel: ResearchDifficulty;
   startedAt: string | null;
   completedAt: string | null;
   createdAt: string;
