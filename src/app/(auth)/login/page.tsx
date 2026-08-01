@@ -28,6 +28,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             alternateHref="/sign-up"
             alternateLabel="New to Curio? Create an account"
             initialMessage={error}
+            oauthNext="/dashboard"
             submitLabel="Log in"
           />
           <Link

@@ -49,6 +49,14 @@ Setup tasks:
 - Confirm Row Level Security policies are enabled.
 - Add seed topics and challenges.
 
+Google account sign-in:
+
+- Create a Google OAuth web client in Google Cloud Console.
+- Add `https://gfxmzwphxtceagulvhrn.supabase.co/auth/v1/callback` as an authorized redirect URI.
+- Enable Google under Supabase Authentication → Providers.
+- Paste the Google client ID and client secret into the Supabase Google provider.
+- Keep the local and production Curio callback URLs in the Supabase redirect allow list.
+
 Recommended local redirect URL:
 
 ```txt

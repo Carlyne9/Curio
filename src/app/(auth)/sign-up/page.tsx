@@ -4,7 +4,15 @@ import { signUp } from "@/app/(auth)/actions";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function SignUpPage() {
+type SignUpPageProps = {
+  searchParams: Promise<{
+    error?: string;
+  }>;
+};
+
+export default async function SignUpPage({ searchParams }: SignUpPageProps) {
+  const { error } = await searchParams;
+
   return (
     <main className="flex min-h-screen items-center justify-center px-4 sm:px-6">
       <Card className="w-full max-w-md">
@@ -20,6 +28,8 @@ export default function SignUpPage() {
             action={signUp}
             alternateHref="/login"
             alternateLabel="Already have an account? Log in"
+            initialMessage={error}
+            oauthNext="/onboarding"
             submitLabel="Create account"
           />
           <Link

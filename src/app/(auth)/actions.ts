@@ -1,9 +1,16 @@
 "use server";
 
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { env } from "@/lib/env";
+import {
+  getGoogleAuthErrorMessage,
+  getLoginErrorMessage,
+  getSignUpErrorMessage,
+  signUpConfirmationMessage
+} from "@/lib/auth/messages";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthActionState = {
@@ -14,6 +21,10 @@ export type AuthActionState = {
 const authSchema = z.object({
   email: z.string().email("Enter a valid email address."),
   password: z.string().min(8, "Your password must be at least 8 characters.")
+});
+
+const oauthSchema = z.object({
+  next: z.enum(["/dashboard", "/onboarding"]).default("/dashboard")
 });
 
 const initialErrorState = (message: string): AuthActionState => ({
@@ -31,14 +42,16 @@ export async function login(
   });
 
   if (!credentials.success) {
-    return initialErrorState(credentials.error.issues[0]?.message ?? "Check your login details.");
+    return initialErrorState(
+      credentials.error.issues[0]?.message ?? "Check your login details."
+    );
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(credentials.data);
 
   if (error) {
-    return initialErrorState("We could not log you in. Check your email and password.");
+    return initialErrorState(getLoginErrorMessage(error));
   }
 
   redirect("/dashboard");
@@ -54,7 +67,9 @@ export async function signUp(
   });
 
   if (!credentials.success) {
-    return initialErrorState(credentials.error.issues[0]?.message ?? "Check your account details.");
+    return initialErrorState(
+      credentials.error.issues[0]?.message ?? "Check your account details."
+    );
   }
 
   const supabase = await createClient();
@@ -66,7 +81,7 @@ export async function signUp(
   });
 
   if (error) {
-    return initialErrorState(error.message);
+    return initialErrorState(getSignUpErrorMessage(error));
   }
 
   if (data.session) {
@@ -75,8 +90,45 @@ export async function signUp(
 
   return {
     status: "success",
-    message: "Check your inbox to confirm your email, then continue to Curio."
+    message: signUpConfirmationMessage
   };
+}
+
+export async function signInWithGoogle(
+  _previousState: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const oauthOptions = oauthSchema.safeParse({
+    next: formData.get("next") || undefined
+  });
+
+  if (!oauthOptions.success) {
+    return initialErrorState(
+      "Google sign-in could not be started. Please try again."
+    );
+  }
+
+  const callbackUrl = new URL("/auth/callback", env.NEXT_PUBLIC_SITE_URL);
+  callbackUrl.searchParams.set("next", oauthOptions.data.next);
+  callbackUrl.searchParams.set("source", "google");
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: callbackUrl.toString()
+    }
+  });
+
+  if (error || !data.url) {
+    return initialErrorState(
+      error
+        ? getGoogleAuthErrorMessage(error)
+        : "Google sign-in could not be started. Please try again."
+    );
+  }
+
+  redirect(data.url as Route);
 }
 
 export async function logout() {
