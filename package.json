@@ -46,7 +46,7 @@
     "vitest": "^4.1.10"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "overrides": {
     "postcss": "8.5.25",

@@ -8,7 +8,7 @@ Use this checklist to prepare the services and credentials needed before active 
 
 Install or confirm:
 
-- `Node.js` version `20.x`
+- `Node.js` version `24.x`
 - `npm`
 - Git, if you want version history
 - A code editor
