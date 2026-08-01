@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "vitest run",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -41,9 +42,14 @@
     "eslint-config-next": "^16.2.12",
     "prettier": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "vitest": "^4.1.10"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": "20.x"
+  },
+  "overrides": {
+    "postcss": "8.5.25",
+    "sharp": "0.35.3"
   }
 }

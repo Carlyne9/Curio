@@ -41,6 +41,21 @@ export type AiReview =
   | z.infer<typeof alignedReviewSchema>
   | z.infer<typeof needsRevisionReviewSchema>;
 
+export function normalizeGeneratedReview(
+  generatedReview: z.infer<typeof generatedReviewSchema>
+): AiReview {
+  if (generatedReview.alignment === "needs_revision") {
+    return needsRevisionReviewSchema.parse({
+      alignment: "needs_revision",
+      revisionMessage:
+        generatedReview.revisionMessage.trim() ||
+        "Your notes and claims do not yet match this research topic. Revise them before requesting feedback again."
+    });
+  }
+
+  return alignedReviewSchema.parse(generatedReview);
+}
+
 export async function generateResearchSessionReview(
   input: ResearchSessionReviewInput
 ) {
@@ -91,14 +106,5 @@ export async function generateResearchSessionReview(
     messages: [{ role: "user", content }]
   });
 
-  if (result.object.alignment === "needs_revision") {
-    return needsRevisionReviewSchema.parse({
-      alignment: "needs_revision",
-      revisionMessage:
-        result.object.revisionMessage.trim() ||
-        "Your notes and claims do not yet match this research topic. Revise them before requesting feedback again."
-    });
-  }
-
-  return alignedReviewSchema.parse(result.object);
+  return normalizeGeneratedReview(result.object);
 }

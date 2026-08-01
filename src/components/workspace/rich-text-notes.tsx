@@ -58,9 +58,9 @@ function ToolbarButton({
 function isTiptapDocument(content: unknown): content is JSONContent {
   return Boolean(
     content &&
-      typeof content === "object" &&
-      "type" in content &&
-      (content as { type?: unknown }).type === "doc"
+    typeof content === "object" &&
+    "type" in content &&
+    (content as { type?: unknown }).type === "doc"
   );
 }
 
@@ -76,7 +76,7 @@ export function RichTextNotes({
       attributes: {
         "aria-label": "Research notes editor",
         class:
-          "min-h-[28rem] px-5 py-5 leading-7 outline-none [&_a]:cursor-pointer [&_a]:text-primary [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_ol]:my-3 [&_ol]:ml-6 [&_ol]:list-decimal [&_p]:my-2 [&_ul]:my-3 [&_ul]:ml-6 [&_ul]:list-disc"
+          "min-h-[20rem] px-4 py-4 leading-7 outline-none sm:min-h-[28rem] sm:px-5 sm:py-5 [&_a]:cursor-pointer [&_a]:text-primary [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mb-2 [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_ol]:my-3 [&_ol]:ml-6 [&_ol]:list-decimal [&_p]:my-2 [&_ul]:my-3 [&_ul]:ml-6 [&_ul]:list-disc"
       }
     },
     extensions: [
@@ -99,7 +99,9 @@ export function RichTextNotes({
   });
 
   if (!editor) {
-    return <div className="min-h-[31rem] animate-pulse rounded-[1.5rem] bg-muted" />;
+    return (
+      <div className="min-h-[31rem] animate-pulse rounded-[1.5rem] bg-muted" />
+    );
   }
 
   function editLink() {
@@ -122,7 +124,12 @@ export function RichTextNotes({
       return;
     }
 
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url.trim() }).run();
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: url.trim() })
+      .run();
   }
 
   return (
@@ -135,7 +142,9 @@ export function RichTextNotes({
         <ToolbarButton
           active={editor.isActive("heading", { level: 2 })}
           label="Heading"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
         >
           <Heading2 className="h-4 w-4" aria-hidden="true" />
         </ToolbarButton>
@@ -174,7 +183,11 @@ export function RichTextNotes({
         >
           <Quote className="h-4 w-4" aria-hidden="true" />
         </ToolbarButton>
-        <ToolbarButton active={editor.isActive("link")} label="Add or edit link" onClick={editLink}>
+        <ToolbarButton
+          active={editor.isActive("link")}
+          label="Add or edit link"
+          onClick={editLink}
+        >
           <Link2 className="h-4 w-4" aria-hidden="true" />
         </ToolbarButton>
         <span aria-hidden="true" className="mx-1 h-6 w-px bg-border" />

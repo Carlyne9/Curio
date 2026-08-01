@@ -46,6 +46,12 @@ import {
 } from "@/components/workspace/handwritten-note-upload";
 import { RichTextNotes } from "@/components/workspace/rich-text-notes";
 import type { AiReview } from "@/lib/ai/review";
+import {
+  getMidpointBreakMinutes,
+  getTimerProgress,
+  getTimerSnapshot,
+  isMidpointBreakEligible
+} from "@/lib/timer";
 import type { ResearchDifficulty } from "@/lib/topics";
 import type { JSONContent } from "@tiptap/react";
 
@@ -168,30 +174,18 @@ export function ResearchWorkspaceShell({
     }
 
     const updateTimer = () => {
-      const now = Date.now();
-      const fallbackFocusEnd =
-        new Date(session.startedAt as string).getTime() +
-        session.durationMinutes * 60 * 1000;
-      const focusEnd = session.focusEndsAt
-        ? new Date(session.focusEndsAt).getTime()
-        : fallbackFocusEnd;
-      const breakEnd = session.breakEndsAt
-        ? new Date(session.breakEndsAt).getTime()
-        : 0;
-      const currentBreakSeconds = Math.max(
-        0,
-        Math.ceil((breakEnd - now) / 1000)
-      );
-      const breakIsActive = currentBreakSeconds > 0 && !session.focusFinishedAt;
-      const currentFocusSeconds = Math.max(
-        0,
-        Math.ceil((focusEnd - now) / 1000) -
-          (breakIsActive ? currentBreakSeconds : 0)
-      );
+      const snapshot = getTimerSnapshot({
+        breakEndsAt: session.breakEndsAt,
+        durationMinutes: session.durationMinutes,
+        focusEndsAt: session.focusEndsAt,
+        focusFinishedAt: session.focusFinishedAt,
+        nowMs: Date.now(),
+        startedAt: session.startedAt as string
+      });
 
-      setBreakSecondsRemaining(currentBreakSeconds);
-      setIsOnBreak(breakIsActive);
-      setSecondsRemaining(currentFocusSeconds);
+      setBreakSecondsRemaining(snapshot.breakSecondsRemaining);
+      setIsOnBreak(snapshot.isOnBreak);
+      setSecondsRemaining(snapshot.focusSecondsRemaining);
     };
 
     updateTimer();
@@ -220,25 +214,18 @@ export function ResearchWorkspaceShell({
   ).padStart(2, "0")}`;
   const focusEnded =
     Boolean(session.focusFinishedAt) || (!isOnBreak && secondsRemaining === 0);
-  const breakMinutes = Math.min(
-    5,
-    Math.max(2, Math.round(session.durationMinutes * 0.1))
-  );
+  const breakMinutes = getMidpointBreakMinutes(session.durationMinutes);
   const plannedFocusSeconds =
     session.durationMinutes * 60 + (session.extensionUsed ? 5 * 60 : 0);
-  const breakEligible =
-    !session.breakTaken &&
-    !breakPromptDismissed &&
-    !focusEnded &&
-    !isOnBreak &&
-    secondsRemaining <= (session.durationMinutes * 60) / 2;
-  const timerProgress = Math.max(
-    0,
-    Math.min(
-      100,
-      ((plannedFocusSeconds - secondsRemaining) / plannedFocusSeconds) * 100
-    )
-  );
+  const breakEligible = isMidpointBreakEligible({
+    breakPromptDismissed,
+    breakTaken: session.breakTaken,
+    durationMinutes: session.durationMinutes,
+    focusEnded,
+    isOnBreak,
+    secondsRemaining
+  });
+  const timerProgress = getTimerProgress(plannedFocusSeconds, secondsRemaining);
 
   useEffect(() => {
     if (!focusEnded || movedToReflectionRef.current) {
@@ -696,7 +683,7 @@ export function ResearchWorkspaceShell({
                 Challenge: {topic.challenge}
               </p>
             </div>
-            <div className="flex items-center gap-3 rounded-full bg-muted px-4 py-3">
+            <div className="flex w-full items-center justify-center gap-3 rounded-full bg-muted px-4 py-3 sm:w-auto">
               <Clock3 className="h-5 w-5 text-primary" aria-hidden="true" />
               <div>
                 <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">

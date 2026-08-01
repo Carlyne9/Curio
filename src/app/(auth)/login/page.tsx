@@ -14,13 +14,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error } = await searchParams;
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6">
+    <main className="flex min-h-screen items-center justify-center px-4 sm:px-6">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Log in to Curio</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Continue building your knowledge library.</p>
+          <p className="text-sm text-muted-foreground">
+            Continue building your knowledge library.
+          </p>
           <AuthForm
             action={login}
             alternateHref="/sign-up"
@@ -28,7 +30,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             initialMessage={error}
             submitLabel="Log in"
           />
-          <Link className="block text-center text-xs text-muted-foreground" href="/">
+          <Link
+            className="block text-center text-xs text-muted-foreground"
+            href="/"
+          >
             Back to home
           </Link>
         </CardContent>

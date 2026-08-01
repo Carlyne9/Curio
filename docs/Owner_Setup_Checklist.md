@@ -8,7 +8,7 @@ Use this checklist to prepare the services and credentials needed before active 
 
 Install or confirm:
 
-- `Node.js` version `20.9.0` or newer
+- `Node.js` version `20.x`
 - `npm`
 - Git, if you want version history
 - A code editor
@@ -55,7 +55,12 @@ Recommended local redirect URL:
 http://localhost:3000/auth/callback
 ```
 
-Production redirect URL can be added after deployment.
+Production URLs:
+
+```txt
+https://curio-lemon-five.vercel.app
+https://curio-lemon-five.vercel.app/auth/callback
+```
 
 ---
 
@@ -81,20 +86,22 @@ MVP usage:
 - Understanding strengths
 - Knowledge gaps
 - Follow-up questions
-- Suggested related topics
+- A revision request when the notes do not align with the research topic
 
 ---
 
 ## 4. Vercel
 
-Vercel is recommended for deployment, but not required for local build work.
+The production project is deployed at `https://curio-lemon-five.vercel.app`.
 
 You will eventually need:
 
 - Vercel account
 - Project connected to the repo
 - Environment variables copied into Vercel
-- Production Supabase redirect URL
+- Production Supabase site and redirect URLs
+
+Do not add `SUPABASE_SERVICE_ROLE_KEY` to Vercel. It is only needed by the local setup scripts.
 
 ---
 
@@ -127,12 +134,15 @@ Not required before coding, but useful soon:
 
 Already created:
 
-- Next.js starter config
-- App route placeholders
-- Static Research Workspace shell
-- Supabase client placeholders
-- AI review placeholder
-- Initial Supabase migration
+- Next.js application and protected routes
+- Supabase authentication, persistence, Row Level Security, and private Storage
+- Guided category, difficulty, wheel, and timer onboarding
+- Rich-text and handwritten-note workspace
+- Editable sources and key claims
+- Reflection and OpenRouter AI coaching
+- Searchable library and session details
+- Automated unit tests and production build checks
+- Ordered Supabase migrations
 - MVP feature spec
 - Frontend and backend architecture docs
 - Design system draft

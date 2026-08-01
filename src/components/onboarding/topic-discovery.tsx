@@ -17,7 +17,11 @@ import {
 import { startSession } from "@/app/(app)/workspace/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { topicCategories, topicSeeds, type TopicSeed } from "@/data/topic-seeds";
+import {
+  topicCategories,
+  topicSeeds,
+  type TopicSeed
+} from "@/data/topic-seeds";
 import {
   buildDifficultyChallenge,
   researchDifficulties,
@@ -50,7 +54,9 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
   const [pendingTopic, setPendingTopic] = useState<TopicSeed | null>(null);
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
   const [pendingNumber, setPendingNumber] = useState<number | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<ResearchDifficulty | "">("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<
+    ResearchDifficulty | ""
+  >("");
   const [durationMinutes, setDurationMinutes] = useState(25);
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -109,7 +115,8 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
       return;
     }
 
-    const targetRotation = 360 - (selectedIndex * segmentSize + segmentSize / 2);
+    const targetRotation =
+      360 - (selectedIndex * segmentSize + segmentSize / 2);
     setPendingTopic(nextTopic);
     setPendingNumber(selectedIndex + 1);
     setSelectedTopic(null);
@@ -155,9 +162,17 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex items-center justify-center gap-2" aria-label="Onboarding progress">
+        <div
+          className="mb-8 flex items-center justify-center gap-2"
+          aria-label="Onboarding progress"
+        >
           {["field", "difficulty", "topic", "timer"].map((stage, index) => {
-            const stages: DiscoveryStep[] = ["field", "difficulty", "topic", "timer"];
+            const stages: DiscoveryStep[] = [
+              "field",
+              "difficulty",
+              "topic",
+              "timer"
+            ];
             const currentIndex = stages.indexOf(step);
             const isReached = index <= currentIndex;
 
@@ -202,22 +217,24 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                 </p>
               </header>
 
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {topicCategories.map((topicCategory) => {
                   const Icon = categoryIcons[topicCategory] ?? Globe2;
 
                   return (
                     <button
-                      className="group min-h-44 rounded-[2rem] border bg-card p-6 text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/10"
+                      className="group rounded-[2rem] border bg-card p-5 text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/10 sm:min-h-44 sm:p-6"
                       key={topicCategory}
                       onClick={() => chooseCategory(topicCategory)}
                       type="button"
                     >
                       <Icon
-                        className="mb-10 h-8 w-8 text-primary transition-transform group-hover:scale-110"
+                        className="mb-6 h-8 w-8 text-primary transition-transform group-hover:scale-110 sm:mb-10"
                         aria-hidden="true"
                       />
-                      <span className="text-xl font-semibold">{topicCategory}</span>
+                      <span className="text-xl font-semibold">
+                        {topicCategory}
+                      </span>
                       <span className="mt-2 block text-sm text-muted-foreground">
                         12 starter topics
                       </span>
@@ -253,7 +270,8 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                   Choose your research difficulty.
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  This changes the depth of the challenge, not which topics can appear.
+                  This changes the depth of the challenge, not which topics can
+                  appear.
                 </p>
               </header>
 
@@ -266,8 +284,8 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                       aria-pressed={isSelected}
                       className={
                         isSelected
-                          ? "min-h-64 rounded-[2rem] border border-primary bg-primary p-6 text-left text-primary-foreground shadow-xl shadow-primary/20"
-                          : "min-h-64 rounded-[2rem] border bg-card p-6 text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/10"
+                          ? "rounded-[2rem] border border-primary bg-primary p-5 text-left text-primary-foreground shadow-xl shadow-primary/20 md:min-h-64 md:p-6"
+                          : "rounded-[2rem] border bg-card p-5 text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/10 md:min-h-64 md:p-6"
                       }
                       key={difficulty.value}
                       onClick={() => chooseDifficulty(difficulty.value)}
@@ -282,7 +300,9 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                       >
                         Level {index + 1}
                       </span>
-                      <span className="mt-12 block text-2xl font-semibold">{difficulty.label}</span>
+                      <span className="mt-6 block text-2xl font-semibold md:mt-12">
+                        {difficulty.label}
+                      </span>
                       <span
                         className={
                           isSelected
@@ -325,19 +345,19 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                   Spin for a topic.
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  The topics stay hidden. When the pointer lands on a number, Curio reveals the
-                  topic behind it.
+                  The topics stay hidden. When the pointer lands on a number,
+                  Curio reveals the topic behind it.
                 </p>
               </header>
 
               <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
                 <Card className="overflow-hidden">
-                  <CardContent className="py-8 sm:py-12">
+                  <CardContent className="px-2 py-6 sm:px-6 sm:py-12">
                     <div className="relative mx-auto aspect-square w-full max-w-[34rem]">
-                      <div className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 border-x-[18px] border-t-[32px] border-x-transparent border-t-foreground" />
+                      <div className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 border-x-[13px] border-t-[24px] border-x-transparent border-t-foreground sm:border-x-[18px] sm:border-t-[32px]" />
                       <motion.div
                         animate={{ rotate: rotation }}
-                        className="absolute inset-3 rounded-full border-[14px] border-card shadow-2xl shadow-black/15"
+                        className="absolute inset-2 rounded-full border-[10px] border-card shadow-2xl shadow-black/15 sm:inset-3 sm:border-[14px]"
                         onAnimationComplete={finishSpin}
                         style={{ background: wheelBackground }}
                         transition={{
@@ -353,7 +373,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
 
                           return (
                             <span
-                              className="absolute flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-card text-sm font-bold shadow sm:h-11 sm:w-11"
+                              className="absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-card text-xs font-bold shadow sm:h-11 sm:w-11 sm:text-sm"
                               key={topic.id}
                               style={{ left: `${left}%`, top: `${top}%` }}
                             >
@@ -363,12 +383,15 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                         })}
                       </motion.div>
                       <Button
-                        className="absolute left-1/2 top-1/2 z-30 h-28 w-28 -translate-x-1/2 -translate-y-1/2 shadow-xl sm:h-32 sm:w-32"
+                        className="absolute left-1/2 top-1/2 z-30 h-20 w-20 -translate-x-1/2 -translate-y-1/2 px-3 text-xs shadow-xl sm:h-32 sm:w-32 sm:text-sm"
                         disabled={!selectedDifficulty || isSpinning}
                         onClick={spinWheel}
                         type="button"
                       >
-                        <RotateCw className="mr-2 h-5 w-5" aria-hidden="true" />
+                        <RotateCw
+                          className="mr-1 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5"
+                          aria-hidden="true"
+                        />
                         {isSpinning ? "Spinning" : "Spin"}
                       </Button>
                     </div>
@@ -394,7 +417,9 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                             Number {selectedNumber} reveals
                           </p>
-                          <h2 className="mt-2 text-2xl font-semibold">{selectedTopic.title}</h2>
+                          <h2 className="mt-2 text-2xl font-semibold">
+                            {selectedTopic.title}
+                          </h2>
                         </div>
                         <div className="rounded-2xl bg-muted p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
@@ -408,17 +433,25 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                           </p>
                         </div>
                         <div className="grid gap-2">
-                          <Button onClick={() => setStep("timer")} type="button">
+                          <Button
+                            onClick={() => setStep("timer")}
+                            type="button"
+                          >
                             Accept topic
                           </Button>
-                          <Button onClick={spinWheel} type="button" variant="secondary">
+                          <Button
+                            onClick={spinWheel}
+                            type="button"
+                            variant="secondary"
+                          >
                             Spin again
                           </Button>
                         </div>
                       </div>
                     ) : (
                       <p className="border-t pt-4 text-sm leading-6 text-muted-foreground">
-                        Spin the wheel to reveal one of twelve hidden {category} topics.
+                        Spin the wheel to reveal one of twelve hidden {category}{" "}
+                        topics.
                       </p>
                     )}
                   </CardContent>
@@ -452,8 +485,8 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                   How long do you want to focus?
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  Choose a realistic window. You can finish early if the learning loop feels
-                  complete.
+                  Choose a realistic window. You can finish early if the
+                  learning loop feels complete.
                 </p>
               </header>
 
@@ -463,9 +496,11 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                     {selectedTopic.title} ·{" "}
                     <span className="capitalize">{selectedDifficulty}</span>
                   </p>
-                  <CardTitle className="mt-4 text-6xl tabular-nums">
+                  <CardTitle className="mt-4 text-5xl tabular-nums sm:text-6xl">
                     {durationMinutes}
-                    <span className="ml-2 text-xl font-medium text-muted-foreground">minutes</span>
+                    <span className="ml-2 text-xl font-medium text-muted-foreground">
+                      minutes
+                    </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-7">
@@ -478,7 +513,9 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                     className="w-full accent-primary"
                     max="60"
                     min="10"
-                    onChange={(event) => setDurationMinutes(Number(event.target.value))}
+                    onChange={(event) =>
+                      setDurationMinutes(Number(event.target.value))
+                    }
                     step="5"
                     type="range"
                     value={durationMinutes}
@@ -502,10 +539,26 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                   </div>
 
                   <form action={startSession}>
-                    <input name="topicId" type="hidden" value={selectedTopic.id} />
-                    <input name="challengeId" type="hidden" value={selectedTopic.challengeId} />
-                    <input name="difficultyLevel" type="hidden" value={selectedDifficulty} />
-                    <input name="durationMinutes" type="hidden" value={durationMinutes} />
+                    <input
+                      name="topicId"
+                      type="hidden"
+                      value={selectedTopic.id}
+                    />
+                    <input
+                      name="challengeId"
+                      type="hidden"
+                      value={selectedTopic.challengeId}
+                    />
+                    <input
+                      name="difficultyLevel"
+                      type="hidden"
+                      value={selectedDifficulty}
+                    />
+                    <input
+                      name="durationMinutes"
+                      type="hidden"
+                      value={durationMinutes}
+                    />
                     <Button className="w-full" type="submit">
                       Start focus session
                     </Button>

@@ -8,6 +8,10 @@ import { generateResearchSessionReview, type AiReview } from "@/lib/ai/review";
 import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import {
+  calculateActualFocusSeconds,
+  getMidpointBreakMinutes
+} from "@/lib/timer";
+import {
   completeSessionSchema,
   keyClaimInputSchema,
   keyClaimMutationInputSchema,
@@ -245,10 +249,7 @@ export async function takeMidpointBreak(
     return { ok: false, message: "Focus time has already ended." };
   }
 
-  const breakMinutes = Math.min(
-    5,
-    Math.max(2, Math.round(session.duration_minutes * 0.1))
-  );
+  const breakMinutes = getMidpointBreakMinutes(session.duration_minutes);
   const breakDurationSeconds = breakMinutes * 60;
   const breakEndsAt = new Date(now + breakDurationSeconds * 1000).toISOString();
   const focusEndsAt = new Date(
@@ -422,9 +423,7 @@ export async function finishFocusEarly(
 
   const { data: session } = await supabase
     .from("research_sessions")
-    .select(
-      "started_at, break_started_at, break_ends_at, break_duration_seconds"
-    )
+    .select("started_at, break_started_at, break_duration_seconds")
     .eq("id", parsed.data.sessionId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -434,23 +433,12 @@ export async function finishFocusEarly(
   }
 
   const now = Date.now();
-  const elapsedSeconds = Math.max(
-    0,
-    Math.floor((now - new Date(session.started_at).getTime()) / 1000)
-  );
-  const breakSeconds =
-    session.break_started_at && session.break_ends_at
-      ? Math.min(
-          session.break_duration_seconds,
-          Math.max(
-            0,
-            Math.floor(
-              (now - new Date(session.break_started_at).getTime()) / 1000
-            )
-          )
-        )
-      : 0;
-  const actualFocusSeconds = Math.max(0, elapsedSeconds - breakSeconds);
+  const actualFocusSeconds = calculateActualFocusSeconds({
+    breakDurationSeconds: session.break_duration_seconds,
+    breakStartedAt: session.break_started_at,
+    nowMs: now,
+    startedAt: session.started_at
+  });
   const timestamp = new Date(now).toISOString();
 
   const { error } = await supabase

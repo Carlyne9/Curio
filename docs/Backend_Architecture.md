@@ -26,9 +26,9 @@ MVP One should prioritize:
 - `Supabase Auth` for authentication
 - `Supabase Postgres` for relational data
 - `Supabase Row Level Security` for ownership protection
-- `Supabase Storage` later for recordings and uploads
+- `Supabase Storage` for private handwritten-note uploads
 - `Next.js Server Actions` for MVP mutations
-- `OpenAI` via `Vercel AI SDK` for structured AI feedback
+- `OpenRouter` via `Vercel AI SDK` for structured AI feedback
 - `Zod` for input validation
 
 ---
