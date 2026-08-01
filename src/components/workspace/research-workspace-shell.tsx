@@ -10,7 +10,6 @@ import {
   CircleStop,
   Clock3,
   Coffee,
-  Compass,
   ExternalLink,
   Info,
   Library,
@@ -133,22 +132,32 @@ export function ResearchWorkspaceShell({
   const [editingSourceNote, setEditingSourceNote] = useState("");
   const [claim, setClaim] = useState("");
   const [claimSourceId, setClaimSourceId] = useState("");
-  const [confidenceLevel, setConfidenceLevel] = useState<"low" | "medium" | "high">("medium");
-  const [editingKeyClaimId, setEditingKeyClaimId] = useState<string | null>(null);
+  const [confidenceLevel, setConfidenceLevel] = useState<
+    "low" | "medium" | "high"
+  >("medium");
+  const [editingKeyClaimId, setEditingKeyClaimId] = useState<string | null>(
+    null
+  );
   const [editingClaim, setEditingClaim] = useState("");
   const [editingClaimSourceId, setEditingClaimSourceId] = useState("");
   const [editingConfidenceLevel, setEditingConfidenceLevel] = useState<
     "low" | "medium" | "high"
   >("medium");
   const [learned, setLearned] = useState(initialReflection?.learned ?? "");
-  const [surprised, setSurprised] = useState(initialReflection?.surprised ?? "");
+  const [surprised, setSurprised] = useState(
+    initialReflection?.surprised ?? ""
+  );
   const [unclear, setUnclear] = useState(initialReflection?.unclear ?? "");
   const [confidenceBefore, setConfidenceBefore] = useState(
     initialReflection?.confidenceBefore ?? 3
   );
-  const [confidenceAfter, setConfidenceAfter] = useState(initialReflection?.confidenceAfter ?? 3);
+  const [confidenceAfter, setConfidenceAfter] = useState(
+    initialReflection?.confidenceAfter ?? 3
+  );
   const [message, setMessage] = useState("Session ready.");
-  const [secondsRemaining, setSecondsRemaining] = useState(session.durationMinutes * 60);
+  const [secondsRemaining, setSecondsRemaining] = useState(
+    session.durationMinutes * 60
+  );
   const [breakSecondsRemaining, setBreakSecondsRemaining] = useState(0);
   const [isOnBreak, setIsOnBreak] = useState(false);
   const [breakPromptDismissed, setBreakPromptDismissed] = useState(false);
@@ -161,16 +170,23 @@ export function ResearchWorkspaceShell({
     const updateTimer = () => {
       const now = Date.now();
       const fallbackFocusEnd =
-        new Date(session.startedAt as string).getTime() + session.durationMinutes * 60 * 1000;
+        new Date(session.startedAt as string).getTime() +
+        session.durationMinutes * 60 * 1000;
       const focusEnd = session.focusEndsAt
         ? new Date(session.focusEndsAt).getTime()
         : fallbackFocusEnd;
-      const breakEnd = session.breakEndsAt ? new Date(session.breakEndsAt).getTime() : 0;
-      const currentBreakSeconds = Math.max(0, Math.ceil((breakEnd - now) / 1000));
+      const breakEnd = session.breakEndsAt
+        ? new Date(session.breakEndsAt).getTime()
+        : 0;
+      const currentBreakSeconds = Math.max(
+        0,
+        Math.ceil((breakEnd - now) / 1000)
+      );
       const breakIsActive = currentBreakSeconds > 0 && !session.focusFinishedAt;
       const currentFocusSeconds = Math.max(
         0,
-        Math.ceil((focusEnd - now) / 1000) - (breakIsActive ? currentBreakSeconds : 0)
+        Math.ceil((focusEnd - now) / 1000) -
+          (breakIsActive ? currentBreakSeconds : 0)
       );
 
       setBreakSecondsRemaining(currentBreakSeconds);
@@ -202,8 +218,12 @@ export function ResearchWorkspaceShell({
   const formattedTime = `${String(Math.floor(displayedSeconds / 60)).padStart(2, "0")}:${String(
     displayedSeconds % 60
   ).padStart(2, "0")}`;
-  const focusEnded = Boolean(session.focusFinishedAt) || (!isOnBreak && secondsRemaining === 0);
-  const breakMinutes = Math.min(5, Math.max(2, Math.round(session.durationMinutes * 0.1)));
+  const focusEnded =
+    Boolean(session.focusFinishedAt) || (!isOnBreak && secondsRemaining === 0);
+  const breakMinutes = Math.min(
+    5,
+    Math.max(2, Math.round(session.durationMinutes * 0.1))
+  );
   const plannedFocusSeconds =
     session.durationMinutes * 60 + (session.extensionUsed ? 5 * 60 : 0);
   const breakEligible =
@@ -214,7 +234,10 @@ export function ResearchWorkspaceShell({
     secondsRemaining <= (session.durationMinutes * 60) / 2;
   const timerProgress = Math.max(
     0,
-    Math.min(100, ((plannedFocusSeconds - secondsRemaining) / plannedFocusSeconds) * 100)
+    Math.min(
+      100,
+      ((plannedFocusSeconds - secondsRemaining) / plannedFocusSeconds) * 100
+    )
   );
 
   useEffect(() => {
@@ -233,7 +256,9 @@ export function ResearchWorkspaceShell({
 
   const hasNotes = Boolean(notes.trim()) || initialAttachments.length > 0;
   const hasSources = initialSources.length > 0;
-  const hasReflection = Boolean(learned.trim() && surprised.trim() && unclear.trim());
+  const hasReflection = Boolean(
+    learned.trim() && surprised.trim() && unclear.trim()
+  );
   const missingRequirements = [
     !hasNotes ? "a note or handwritten upload" : null,
     !hasSources ? "one source" : null,
@@ -373,7 +398,9 @@ export function ResearchWorkspaceShell({
     });
   }
 
-  function beginSourceEdit(source: ResearchWorkspaceShellProps["initialSources"][number]) {
+  function beginSourceEdit(
+    source: ResearchWorkspaceShellProps["initialSources"][number]
+  ) {
     setEditingSourceId(source.id);
     setEditingSourceTitle(source.title);
     setEditingSourceUrl(source.url);
@@ -536,7 +563,9 @@ export function ResearchWorkspaceShell({
 
   function requestAiReview() {
     if (!focusEnded || !hasReflection) {
-      setMessage("Finish focus and complete all reflection questions before requesting AI review.");
+      setMessage(
+        "Finish focus and complete all reflection questions before requesting AI review."
+      );
       reflectionSectionRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -650,13 +679,19 @@ export function ResearchWorkspaceShell({
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">
-                  {topic.category} · <span className="capitalize">{topic.difficulty}</span>
+                  {topic.category} ·{" "}
+                  <span className="capitalize">{topic.difficulty}</span>
                 </p>
-                <Link className="text-sm text-muted-foreground" href="/dashboard">
+                <Link
+                  className="text-sm text-muted-foreground"
+                  href="/dashboard"
+                >
                   Back to dashboard
                 </Link>
               </div>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight">{topic.title}</h1>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                {topic.title}
+              </h1>
               <p className="mt-2 max-w-3xl text-muted-foreground">
                 Challenge: {topic.challenge}
               </p>
@@ -665,9 +700,15 @@ export function ResearchWorkspaceShell({
               <Clock3 className="h-5 w-5 text-primary" aria-hidden="true" />
               <div>
                 <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {isOnBreak ? "Break" : focusEnded ? "Focus complete" : "Focus"}
+                  {isOnBreak
+                    ? "Break"
+                    : focusEnded
+                      ? "Focus complete"
+                      : "Focus"}
                 </span>
-                <span className="text-2xl font-semibold tabular-nums">{formattedTime}</span>
+                <span className="text-2xl font-semibold tabular-nums">
+                  {formattedTime}
+                </span>
               </div>
             </div>
           </div>
@@ -682,11 +723,15 @@ export function ResearchWorkspaceShell({
           {isOnBreak ? (
             <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <Coffee className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
+                <Coffee
+                  className="mt-0.5 h-5 w-5 text-primary"
+                  aria-hidden="true"
+                />
                 <div>
                   <p className="font-semibold">Midpoint break in progress</p>
                   <p className="text-sm text-muted-foreground">
-                    Step away briefly. Focus time is paused until this break ends.
+                    Step away briefly. Focus time is paused until this break
+                    ends.
                   </p>
                 </div>
               </div>
@@ -702,11 +747,15 @@ export function ResearchWorkspaceShell({
           ) : breakEligible ? (
             <div className="mt-4 flex flex-col gap-3 rounded-2xl border bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <Coffee className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
+                <Coffee
+                  className="mt-0.5 h-5 w-5 text-primary"
+                  aria-hidden="true"
+                />
                 <div>
                   <p className="font-semibold">You are halfway there</p>
                   <p className="text-sm text-muted-foreground">
-                    Take one optional {breakMinutes}-minute break, or keep your momentum.
+                    Take one optional {breakMinutes}-minute break, or keep your
+                    momentum.
                   </p>
                 </div>
               </div>
@@ -765,14 +814,18 @@ export function ResearchWorkspaceShell({
                           <input
                             aria-label="Source title"
                             className="rounded-xl border bg-background px-3 py-2 text-sm"
-                            onChange={(event) => setEditingSourceTitle(event.target.value)}
+                            onChange={(event) =>
+                              setEditingSourceTitle(event.target.value)
+                            }
                             required
                             value={editingSourceTitle}
                           />
                           <input
                             aria-label="Source URL"
                             className="rounded-xl border bg-background px-3 py-2 text-sm"
-                            onChange={(event) => setEditingSourceUrl(event.target.value)}
+                            onChange={(event) =>
+                              setEditingSourceUrl(event.target.value)
+                            }
                             required
                             type="url"
                             value={editingSourceUrl}
@@ -780,7 +833,9 @@ export function ResearchWorkspaceShell({
                           <input
                             aria-label="Source note"
                             className="rounded-xl border bg-background px-3 py-2 text-sm"
-                            onChange={(event) => setEditingSourceNote(event.target.value)}
+                            onChange={(event) =>
+                              setEditingSourceNote(event.target.value)
+                            }
                             placeholder="Why it matters (optional)"
                             value={editingSourceNote}
                           />
@@ -806,7 +861,10 @@ export function ResearchWorkspaceShell({
                           </div>
                         </form>
                       ) : (
-                        <div className="rounded-2xl bg-muted p-3 text-sm" key={source.id}>
+                        <div
+                          className="rounded-2xl bg-muted p-3 text-sm"
+                          key={source.id}
+                        >
                           <div className="flex items-start justify-between gap-2">
                             <a
                               className="min-w-0 font-medium hover:text-primary"
@@ -814,7 +872,9 @@ export function ResearchWorkspaceShell({
                               rel="noreferrer"
                               target="_blank"
                             >
-                              <span className="break-words">{source.title}</span>
+                              <span className="break-words">
+                                {source.title}
+                              </span>
                               <ExternalLink
                                 className="ml-1 inline h-3.5 w-3.5"
                                 aria-hidden="true"
@@ -828,7 +888,10 @@ export function ResearchWorkspaceShell({
                                 onClick={() => beginSourceEdit(source)}
                                 type="button"
                               >
-                                <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                                <Pencil
+                                  className="h-3.5 w-3.5"
+                                  aria-hidden="true"
+                                />
                               </button>
                               <button
                                 aria-label={`Delete ${source.title}`}
@@ -837,20 +900,30 @@ export function ResearchWorkspaceShell({
                                 onClick={() => handleDeleteSource(source)}
                                 type="button"
                               >
-                                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                                <Trash2
+                                  className="h-3.5 w-3.5"
+                                  aria-hidden="true"
+                                />
                               </button>
                             </div>
                           </div>
                           {source.note ? (
-                            <p className="mt-1 text-xs text-muted-foreground">{source.note}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              {source.note}
+                            </p>
                           ) : null}
                         </div>
                       )
                     )
                   ) : (
-                    <p className="text-sm text-muted-foreground">Add the first source you trust.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Add the first source you trust.
+                    </p>
                   )}
-                  <form className="grid gap-2 border-t pt-3" onSubmit={handleAddSource}>
+                  <form
+                    className="grid gap-2 border-t pt-3"
+                    onSubmit={handleAddSource}
+                  >
                     <input
                       className="rounded-xl border bg-background px-3 py-2 text-sm"
                       onChange={(event) => setSourceTitle(event.target.value)}
@@ -872,7 +945,11 @@ export function ResearchWorkspaceShell({
                       placeholder="Why it matters (optional)"
                       value={sourceNote}
                     />
-                    <Button disabled={isPending} type="submit" variant="secondary">
+                    <Button
+                      disabled={isPending}
+                      type="submit"
+                      variant="secondary"
+                    >
                       Add source
                     </Button>
                   </form>
@@ -895,14 +972,18 @@ export function ResearchWorkspaceShell({
                       <textarea
                         aria-label="Key claim"
                         className="min-h-20 rounded-xl border bg-background px-3 py-2 text-sm"
-                        onChange={(event) => setEditingClaim(event.target.value)}
+                        onChange={(event) =>
+                          setEditingClaim(event.target.value)
+                        }
                         required
                         value={editingClaim}
                       />
                       <select
                         aria-label="Linked source"
                         className="rounded-xl border bg-background px-3 py-2 text-sm"
-                        onChange={(event) => setEditingClaimSourceId(event.target.value)}
+                        onChange={(event) =>
+                          setEditingClaimSourceId(event.target.value)
+                        }
                         value={editingClaimSourceId}
                       >
                         <option value="">No linked source</option>
@@ -948,7 +1029,10 @@ export function ResearchWorkspaceShell({
                       </div>
                     </form>
                   ) : (
-                    <div className="rounded-2xl bg-muted p-3 text-sm" key={keyClaim.id}>
+                    <div
+                      className="rounded-2xl bg-muted p-3 text-sm"
+                      key={keyClaim.id}
+                    >
                       <div className="flex items-start justify-between gap-2">
                         <p>{keyClaim.claim}</p>
                         <div className="flex shrink-0">
@@ -959,7 +1043,10 @@ export function ResearchWorkspaceShell({
                             onClick={() => beginKeyClaimEdit(keyClaim)}
                             type="button"
                           >
-                            <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                            <Pencil
+                              className="h-3.5 w-3.5"
+                              aria-hidden="true"
+                            />
                           </button>
                           <button
                             aria-label="Delete key claim"
@@ -968,7 +1055,10 @@ export function ResearchWorkspaceShell({
                             onClick={() => handleDeleteKeyClaim(keyClaim)}
                             type="button"
                           >
-                            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                            <Trash2
+                              className="h-3.5 w-3.5"
+                              aria-hidden="true"
+                            />
                           </button>
                         </div>
                       </div>
@@ -985,7 +1075,10 @@ export function ResearchWorkspaceShell({
                     </div>
                   )
                 )}
-                <form className="grid gap-2 border-t pt-3" onSubmit={handleAddClaim}>
+                <form
+                  className="grid gap-2 border-t pt-3"
+                  onSubmit={handleAddClaim}
+                >
                   <textarea
                     className="min-h-20 rounded-xl border bg-background px-3 py-2 text-sm"
                     onChange={(event) => setClaim(event.target.value)}
@@ -1008,7 +1101,9 @@ export function ResearchWorkspaceShell({
                   <select
                     className="rounded-xl border bg-background px-3 py-2 text-sm"
                     onChange={(event) =>
-                      setConfidenceLevel(event.target.value as "low" | "medium" | "high")
+                      setConfidenceLevel(
+                        event.target.value as "low" | "medium" | "high"
+                      )
                     }
                     value={confidenceLevel}
                   >
@@ -1016,7 +1111,11 @@ export function ResearchWorkspaceShell({
                     <option value="medium">Medium confidence</option>
                     <option value="high">High confidence</option>
                   </select>
-                  <Button disabled={isPending} type="submit" variant="secondary">
+                  <Button
+                    disabled={isPending}
+                    type="submit"
+                    variant="secondary"
+                  >
                     Add claim
                   </Button>
                 </form>
@@ -1056,10 +1155,13 @@ export function ResearchWorkspaceShell({
                     <div className="flex flex-col gap-3 rounded-2xl bg-primary/10 p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <p className="font-semibold">
-                          {session.endedEarly ? "Focus ended early" : "Focus complete"}
+                          {session.endedEarly
+                            ? "Focus ended early"
+                            : "Focus complete"}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Your notes are safe. Capture what changed in your understanding.
+                          Your notes are safe. Capture what changed in your
+                          understanding.
                         </p>
                       </div>
                       {!session.endedEarly && !session.extensionUsed ? (
@@ -1079,12 +1181,18 @@ export function ResearchWorkspaceShell({
                       className="flex items-start gap-3 border-l-4 border-primary bg-primary/5 px-4 py-3"
                       role="note"
                     >
-                      <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                      <Info
+                        className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                        aria-hidden="true"
+                      />
                       <div>
-                        <p className="text-sm font-semibold text-foreground">About reflection</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          About reflection
+                        </p>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          Use this section to capture what you learned, what surprised you, what
-                          remains unclear, and how your confidence changed.
+                          Use this section to capture what you learned, what
+                          surprised you, what remains unclear, and how your
+                          confidence changed.
                         </p>
                       </div>
                     </div>
@@ -1118,7 +1226,9 @@ export function ResearchWorkspaceShell({
                       Confidence before
                       <select
                         className="rounded-xl border bg-background px-3 py-2 font-normal"
-                        onChange={(event) => setConfidenceBefore(Number(event.target.value))}
+                        onChange={(event) =>
+                          setConfidenceBefore(Number(event.target.value))
+                        }
                         value={confidenceBefore}
                       >
                         {[1, 2, 3, 4, 5].map((value) => (
@@ -1132,7 +1242,9 @@ export function ResearchWorkspaceShell({
                       Confidence after
                       <select
                         className="rounded-xl border bg-background px-3 py-2 font-normal"
-                        onChange={(event) => setConfidenceAfter(Number(event.target.value))}
+                        onChange={(event) =>
+                          setConfidenceAfter(Number(event.target.value))
+                        }
                         value={confidenceAfter}
                       >
                         {[1, 2, 3, 4, 5].map((value) => (
@@ -1160,13 +1272,19 @@ export function ResearchWorkspaceShell({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+                  <CheckCircle2
+                    className="h-5 w-5 text-primary"
+                    aria-hidden="true"
+                  />
                   Session Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {checklist.map((item) => (
-                  <div className="flex items-center gap-3 text-sm" key={item.label}>
+                  <div
+                    className="flex items-center gap-3 text-sm"
+                    key={item.label}
+                  >
                     <span
                       aria-hidden="true"
                       className={
@@ -1192,86 +1310,115 @@ export function ResearchWorkspaceShell({
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 {aiReview ? (
-                  <>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-                        Session Summary
-                      </p>
-                      <p className="mt-2 leading-6 text-muted-foreground">{aiReview.summary}</p>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-2 font-semibold">
-                        <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
-                        Strengths
-                      </p>
-                      <ul className="mt-2 space-y-2 text-muted-foreground">
-                        {aiReview.strengths.map((strength) => (
-                          <li className="flex gap-2" key={strength}>
-                            <span aria-hidden="true">•</span>
-                            <span>{strength}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-2 font-semibold">
-                        <CircleAlert className="h-4 w-4 text-accent-foreground" aria-hidden="true" />
-                        Gaps to explore
-                      </p>
-                      <ul className="mt-2 space-y-2 text-muted-foreground">
-                        {aiReview.gaps.map((gap) => (
-                          <li className="flex gap-2" key={gap}>
-                            <span aria-hidden="true">•</span>
-                            <span>{gap}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-2 font-semibold">
-                        <MessageCircleQuestion className="h-4 w-4 text-primary" aria-hidden="true" />
-                        Follow-up questions
-                      </p>
-                      <ol className="mt-2 list-decimal space-y-2 pl-5 text-muted-foreground">
-                        {aiReview.followUpQuestions.map((question) => (
-                          <li key={question}>{question}</li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div>
-                      <p className="flex items-center gap-2 font-semibold">
-                        <Compass className="h-4 w-4 text-primary" aria-hidden="true" />
-                        Explore next
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {aiReview.suggestedTopics.map((suggestedTopic) => (
-                          <span
-                            className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
-                            key={suggestedTopic}
-                          >
-                            {suggestedTopic}
-                          </span>
-                        ))}
+                  aiReview.alignment === "needs_revision" ? (
+                    <>
+                      <div className="rounded-2xl border border-accent bg-accent/10 p-4">
+                        <p className="flex items-center gap-2 font-semibold">
+                          <CircleAlert className="h-4 w-4" aria-hidden="true" />
+                          Revise your research notes
+                        </p>
+                        <p className="mt-2 leading-6 text-muted-foreground">
+                          {aiReview.revisionMessage}
+                        </p>
                       </div>
-                    </div>
-                    <Button
-                      className="w-full"
-                      disabled={isAiReviewPending}
-                      onClick={requestAiReview}
-                      type="button"
-                      variant="secondary"
-                    >
-                      {isAiReviewPending ? (
-                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                      ) : null}
-                      Refresh review
-                    </Button>
-                  </>
+                      <Button
+                        className="w-full"
+                        disabled={isAiReviewPending}
+                        onClick={requestAiReview}
+                        type="button"
+                        variant="secondary"
+                      >
+                        {isAiReviewPending ? (
+                          <LoaderCircle
+                            className="mr-2 h-4 w-4 animate-spin"
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                        Review revised notes
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                          Session Summary
+                        </p>
+                        <p className="mt-2 leading-6 text-muted-foreground">
+                          {aiReview.summary}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="flex items-center gap-2 font-semibold">
+                          <CheckCircle2
+                            className="h-4 w-4 text-primary"
+                            aria-hidden="true"
+                          />
+                          Strengths
+                        </p>
+                        <ul className="mt-2 space-y-2 text-muted-foreground">
+                          {aiReview.strengths.map((strength) => (
+                            <li className="flex gap-2" key={strength}>
+                              <span aria-hidden="true">•</span>
+                              <span>{strength}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="flex items-center gap-2 font-semibold">
+                          <CircleAlert
+                            className="h-4 w-4 text-accent-foreground"
+                            aria-hidden="true"
+                          />
+                          Gaps to explore
+                        </p>
+                        <ul className="mt-2 space-y-2 text-muted-foreground">
+                          {aiReview.gaps.map((gap) => (
+                            <li className="flex gap-2" key={gap}>
+                              <span aria-hidden="true">•</span>
+                              <span>{gap}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="flex items-center gap-2 font-semibold">
+                          <MessageCircleQuestion
+                            className="h-4 w-4 text-primary"
+                            aria-hidden="true"
+                          />
+                          Follow-up questions
+                        </p>
+                        <ol className="mt-2 list-decimal space-y-2 pl-5 text-muted-foreground">
+                          {aiReview.followUpQuestions.map((question) => (
+                            <li key={question}>{question}</li>
+                          ))}
+                        </ol>
+                      </div>
+                      <Button
+                        className="w-full"
+                        disabled={isAiReviewPending}
+                        onClick={requestAiReview}
+                        type="button"
+                        variant="secondary"
+                      >
+                        {isAiReviewPending ? (
+                          <LoaderCircle
+                            className="mr-2 h-4 w-4 animate-spin"
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                        Refresh review
+                      </Button>
+                    </>
+                  )
                 ) : (
                   <>
                     <p className="leading-6 text-muted-foreground">
-                      Curio will review your notes and reflection, then highlight strengths,
-                      knowledge gaps, follow-up questions, and related topics.
+                      Curio first checks that your typed or handwritten notes
+                      and supporting claims match the research topic. Aligned
+                      work receives strengths, knowledge gaps, and follow-up
+                      questions; unrelated work is returned for revision.
                     </p>
                     {!focusEnded ? (
                       <p className="text-xs text-muted-foreground">
@@ -1279,7 +1426,8 @@ export function ResearchWorkspaceShell({
                       </p>
                     ) : !hasReflection ? (
                       <p className="text-xs text-muted-foreground">
-                        Complete all three reflection questions to unlock your review.
+                        Complete all three reflection questions to unlock your
+                        review.
                       </p>
                     ) : null}
                     {aiFailureMessage ? (
@@ -1289,21 +1437,28 @@ export function ResearchWorkspaceShell({
                     ) : null}
                     <Button
                       className="w-full"
-                      disabled={isAiReviewPending || !focusEnded || !hasReflection}
+                      disabled={
+                        isAiReviewPending || !focusEnded || !hasReflection
+                      }
                       onClick={requestAiReview}
                       type="button"
                       variant="secondary"
                     >
                       {isAiReviewPending ? (
-                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                        <LoaderCircle
+                          className="mr-2 h-4 w-4 animate-spin"
+                          aria-hidden="true"
+                        />
                       ) : (
                         <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
                       )}
-                      {isAiReviewPending ? "Reviewing session…" : "Generate AI review"}
+                      {isAiReviewPending
+                        ? "Reviewing session…"
+                        : "Generate AI review"}
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      AI feedback is optional. You can finish and save the session if it is
-                      unavailable.
+                      AI feedback is optional. You can finish and save the
+                      session if it is unavailable.
                     </p>
                   </>
                 )}
@@ -1313,16 +1468,32 @@ export function ResearchWorkspaceShell({
         </section>
 
         <footer className="sticky bottom-4 flex flex-col gap-3 rounded-[2rem] border bg-card/95 p-3 shadow-lg shadow-black/10 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-          <div aria-live="polite" className="flex items-center gap-2 px-3 text-sm text-muted-foreground">
+          <div
+            aria-live="polite"
+            className="flex items-center gap-2 px-3 text-sm text-muted-foreground"
+          >
             <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
-            {isPending ? "Saving…" : message === "Session ready." ? completionHint : message}
+            {isPending
+              ? "Saving…"
+              : message === "Session ready."
+                ? completionHint
+                : message}
           </div>
           <div className="flex gap-2">
-            <Button disabled={isPending} onClick={saveNotes} type="button" variant="secondary">
+            <Button
+              disabled={isPending}
+              onClick={saveNotes}
+              type="button"
+              variant="secondary"
+            >
               <Library className="mr-2 h-4 w-4" aria-hidden="true" />
               Save Draft
             </Button>
-            <Button disabled={isPending || !focusEnded} onClick={finishSession} type="button">
+            <Button
+              disabled={isPending || !focusEnded}
+              onClick={finishSession}
+              type="button"
+            >
               {focusEnded ? "Finish Session" : "Finish after focus"}
             </Button>
           </div>

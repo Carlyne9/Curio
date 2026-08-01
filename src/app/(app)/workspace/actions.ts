@@ -1,14 +1,10 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import {
-  generateResearchSessionReview,
-  type AiReview
-} from "@/lib/ai/review";
+import { generateResearchSessionReview, type AiReview } from "@/lib/ai/review";
 import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -82,7 +78,9 @@ export async function startSession(formData: FormData) {
   });
 
   if (!input.success) {
-    redirect("/onboarding?error=Choose+a+topic+and+a+timer+between+10+and+60+minutes.");
+    redirect(
+      "/onboarding?error=Choose+a+topic+and+a+timer+between+10+and+60+minutes."
+    );
   }
 
   const { supabase, user } = await authenticatedClient();
@@ -169,7 +167,9 @@ export async function startSession(formData: FormData) {
   redirect("/workspace");
 }
 
-export async function updateSession(input: unknown): Promise<WorkspaceActionResult> {
+export async function updateSession(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = updateSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -199,7 +199,9 @@ export async function updateSession(input: unknown): Promise<WorkspaceActionResu
   return { ok: true, message: "Session updated." };
 }
 
-export async function takeMidpointBreak(input: unknown): Promise<WorkspaceActionResult> {
+export async function takeMidpointBreak(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = timerSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -233,14 +235,20 @@ export async function takeMidpointBreak(input: unknown): Promise<WorkspaceAction
   const currentFocusEnd = new Date(session.focus_ends_at).getTime();
 
   if (now < halfwayAt) {
-    return { ok: false, message: "The break unlocks halfway through the focus session." };
+    return {
+      ok: false,
+      message: "The break unlocks halfway through the focus session."
+    };
   }
 
   if (now >= currentFocusEnd) {
     return { ok: false, message: "Focus time has already ended." };
   }
 
-  const breakMinutes = Math.min(5, Math.max(2, Math.round(session.duration_minutes * 0.1)));
+  const breakMinutes = Math.min(
+    5,
+    Math.max(2, Math.round(session.duration_minutes * 0.1))
+  );
   const breakDurationSeconds = breakMinutes * 60;
   const breakEndsAt = new Date(now + breakDurationSeconds * 1000).toISOString();
   const focusEndsAt = new Date(
@@ -268,7 +276,9 @@ export async function takeMidpointBreak(input: unknown): Promise<WorkspaceAction
   return { ok: true, message: `${breakMinutes}-minute break started.` };
 }
 
-export async function endMidpointBreak(input: unknown): Promise<WorkspaceActionResult> {
+export async function endMidpointBreak(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = timerSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -288,7 +298,11 @@ export async function endMidpointBreak(input: unknown): Promise<WorkspaceActionR
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!session?.break_started_at || !session.break_ends_at || !session.focus_ends_at) {
+  if (
+    !session?.break_started_at ||
+    !session.break_ends_at ||
+    !session.focus_ends_at
+  ) {
     return { ok: false, message: "There is no active break to end." };
   }
 
@@ -327,7 +341,9 @@ export async function endMidpointBreak(input: unknown): Promise<WorkspaceActionR
   return { ok: true, message: "Break ended. Focus resumed." };
 }
 
-export async function addFiveMinutes(input: unknown): Promise<WorkspaceActionResult> {
+export async function addFiveMinutes(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = timerSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -348,17 +364,26 @@ export async function addFiveMinutes(input: unknown): Promise<WorkspaceActionRes
     .maybeSingle();
 
   if (!session?.focus_ends_at || session.focus_finished_at) {
-    return { ok: false, message: "This focus session can no longer be extended." };
+    return {
+      ok: false,
+      message: "This focus session can no longer be extended."
+    };
   }
 
   if (session.extension_used) {
-    return { ok: false, message: "The five-minute extension has already been used." };
+    return {
+      ok: false,
+      message: "The five-minute extension has already been used."
+    };
   }
 
   const now = Date.now();
 
   if (now < new Date(session.focus_ends_at).getTime()) {
-    return { ok: false, message: "The extension becomes available when the timer ends." };
+    return {
+      ok: false,
+      message: "The extension becomes available when the timer ends."
+    };
   }
 
   const { error } = await supabase
@@ -380,7 +405,9 @@ export async function addFiveMinutes(input: unknown): Promise<WorkspaceActionRes
   return { ok: true, message: "Five minutes added." };
 }
 
-export async function finishFocusEarly(input: unknown): Promise<WorkspaceActionResult> {
+export async function finishFocusEarly(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = timerSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -395,7 +422,9 @@ export async function finishFocusEarly(input: unknown): Promise<WorkspaceActionR
 
   const { data: session } = await supabase
     .from("research_sessions")
-    .select("started_at, break_started_at, break_ends_at, break_duration_seconds")
+    .select(
+      "started_at, break_started_at, break_ends_at, break_duration_seconds"
+    )
     .eq("id", parsed.data.sessionId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -413,7 +442,12 @@ export async function finishFocusEarly(input: unknown): Promise<WorkspaceActionR
     session.break_started_at && session.break_ends_at
       ? Math.min(
           session.break_duration_seconds,
-          Math.max(0, Math.floor((now - new Date(session.break_started_at).getTime()) / 1000))
+          Math.max(
+            0,
+            Math.floor(
+              (now - new Date(session.break_started_at).getTime()) / 1000
+            )
+          )
         )
       : 0;
   const actualFocusSeconds = Math.max(0, elapsedSeconds - breakSeconds);
@@ -437,10 +471,15 @@ export async function finishFocusEarly(input: unknown): Promise<WorkspaceActionR
   }
 
   revalidatePath("/workspace");
-  return { ok: true, message: "Focus ended. Your notes are safe—time to reflect." };
+  return {
+    ok: true,
+    message: "Focus ended. Your notes are safe—time to reflect."
+  };
 }
 
-export async function autosaveNotes(input: unknown): Promise<WorkspaceActionResult> {
+export async function autosaveNotes(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = notesSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -465,7 +504,10 @@ export async function autosaveNotes(input: unknown): Promise<WorkspaceActionResu
 
   const now = new Date().toISOString();
   const notePayload = {
-    content_json: parsed.data.contentJson ?? { type: "text", content: parsed.data.content },
+    content_json: parsed.data.contentJson ?? {
+      type: "text",
+      content: parsed.data.content
+    },
     content_text: parsed.data.content,
     updated_at: now
   };
@@ -485,7 +527,9 @@ export async function autosaveNotes(input: unknown): Promise<WorkspaceActionResu
   return { ok: true, message: "Notes saved." };
 }
 
-export async function addSource(input: unknown): Promise<WorkspaceActionResult> {
+export async function addSource(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = sourceInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -513,7 +557,9 @@ export async function addSource(input: unknown): Promise<WorkspaceActionResult> 
   return { ok: true, message: "Source added." };
 }
 
-export async function updateSource(input: unknown): Promise<WorkspaceActionResult> {
+export async function updateSource(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = sourceMutationInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -546,7 +592,9 @@ export async function updateSource(input: unknown): Promise<WorkspaceActionResul
   return { ok: true, message: "Source updated." };
 }
 
-export async function deleteSource(input: unknown): Promise<WorkspaceActionResult> {
+export async function deleteSource(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = workspaceItemDeleteSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -575,7 +623,9 @@ export async function deleteSource(input: unknown): Promise<WorkspaceActionResul
   return { ok: true, message: "Source deleted." };
 }
 
-export async function addKeyClaim(input: unknown): Promise<WorkspaceActionResult> {
+export async function addKeyClaim(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = keyClaimInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -603,7 +653,9 @@ export async function addKeyClaim(input: unknown): Promise<WorkspaceActionResult
   return { ok: true, message: "Key claim added." };
 }
 
-export async function updateKeyClaim(input: unknown): Promise<WorkspaceActionResult> {
+export async function updateKeyClaim(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = keyClaimMutationInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -636,7 +688,9 @@ export async function updateKeyClaim(input: unknown): Promise<WorkspaceActionRes
   return { ok: true, message: "Key claim updated." };
 }
 
-export async function deleteKeyClaim(input: unknown): Promise<WorkspaceActionResult> {
+export async function deleteKeyClaim(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = workspaceItemDeleteSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -665,7 +719,9 @@ export async function deleteKeyClaim(input: unknown): Promise<WorkspaceActionRes
   return { ok: true, message: "Key claim deleted." };
 }
 
-export async function submitReflection(input: unknown): Promise<WorkspaceActionResult> {
+export async function submitReflection(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = reflectionInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -704,7 +760,9 @@ export async function submitReflection(input: unknown): Promise<WorkspaceActionR
   return { ok: true, message: "Reflection saved." };
 }
 
-export async function generateAiReview(input: unknown): Promise<AiReviewActionResult> {
+export async function generateAiReview(
+  input: unknown
+): Promise<AiReviewActionResult> {
   const parsed = timerSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -721,7 +779,8 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
     return {
       ok: false,
       fallback: true,
-      message: "AI review is not configured yet. Your work is saved, and you can finish without it."
+      message:
+        "AI review is not configured yet. Your work is saved, and you can finish without it."
     };
   }
 
@@ -733,13 +792,17 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
     .maybeSingle();
 
   if (sessionError || !session) {
-    return { ok: false, message: "This session could not be prepared for AI review." };
+    return {
+      ok: false,
+      message: "This session could not be prepared for AI review."
+    };
   }
 
   const [
     { data: note },
     { data: sources },
     { data: keyClaims },
+    { data: attachments },
     { data: reflection },
     { data: topic },
     { data: challenge }
@@ -760,12 +823,23 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
       .eq("session_id", parsed.data.sessionId)
       .order("created_at", { ascending: true }),
     supabase
+      .from("note_attachments")
+      .select("storage_path, file_name, mime_type")
+      .eq("session_id", parsed.data.sessionId)
+      .order("created_at", { ascending: true }),
+    supabase
       .from("reflections")
-      .select("learned, surprised, unclear, confidence_before, confidence_after")
+      .select(
+        "learned, surprised, unclear, confidence_before, confidence_after"
+      )
       .eq("session_id", parsed.data.sessionId)
       .maybeSingle(),
     session.topic_id
-      ? supabase.from("topics").select("title").eq("id", session.topic_id).maybeSingle()
+      ? supabase
+          .from("topics")
+          .select("title")
+          .eq("id", session.topic_id)
+          .maybeSingle()
       : Promise.resolve({ data: null }),
     session.challenge_id
       ? supabase
@@ -777,14 +851,41 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
   ]);
 
   if (!reflection) {
-    return { ok: false, message: "Save your reflection before requesting AI feedback." };
+    return {
+      ok: false,
+      message: "Save your reflection before requesting AI feedback."
+    };
   }
 
   try {
+    const reviewAttachments = await Promise.all(
+      (attachments ?? []).map(async (attachment) => {
+        const { data, error } = await supabase.storage
+          .from("session-notes")
+          .download(attachment.storage_path);
+
+        if (error || !data) {
+          throw new Error(
+            "A handwritten note attachment could not be prepared for review."
+          );
+        }
+
+        return {
+          data: new Uint8Array(await data.arrayBuffer()),
+          fileName: attachment.file_name,
+          mimeType: attachment.mime_type
+        };
+      })
+    );
+
     const review = await generateResearchSessionReview({
+      attachments: reviewAttachments,
       topic: topic?.title ?? "Open research topic",
       challenge: challenge?.prompt ?? "Review the learner's research session.",
-      notes: truncateForReview(note?.content_text ?? "No typed notes provided.", 20_000),
+      notes: truncateForReview(
+        note?.content_text ?? "No typed notes provided.",
+        20_000
+      ),
       sources: (sources ?? []).map((source) =>
         truncateForReview(
           source.note ? `${source.title}: ${source.note}` : source.title,
@@ -803,20 +904,19 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
         unclear: reflection.unclear,
         confidenceBefore: reflection.confidence_before,
         confidenceAfter: reflection.confidence_after
-      }),
-      safetyIdentifier: createHash("sha256")
-        .update(`curio:${user.id}`)
-        .digest("hex")
+      })
     });
+
+    const isRevisionRequired = review.alignment === "needs_revision";
 
     const { error: saveError } = await supabase.from("ai_feedback").upsert(
       {
         session_id: parsed.data.sessionId,
-        summary: review.summary,
-        strengths: review.strengths,
-        gaps: review.gaps,
-        follow_up_questions: review.followUpQuestions,
-        suggested_topics: review.suggestedTopics,
+        summary: isRevisionRequired ? review.revisionMessage : review.summary,
+        strengths: isRevisionRequired ? [] : review.strengths,
+        gaps: isRevisionRequired ? [] : review.gaps,
+        follow_up_questions: isRevisionRequired ? [] : review.followUpQuestions,
+        suggested_topics: [],
         created_at: new Date().toISOString()
       },
       { onConflict: "session_id" }
@@ -826,33 +926,51 @@ export async function generateAiReview(input: unknown): Promise<AiReviewActionRe
       return {
         ok: false,
         fallback: true,
-        message: "The review was generated but could not be saved. You can retry or finish without it."
+        message:
+          "The review was generated but could not be saved. You can retry or finish without it."
       };
     }
 
     revalidatePath("/workspace");
-    return { ok: true, message: "AI review ready.", review };
+    return {
+      ok: true,
+      message: isRevisionRequired
+        ? "Revise your notes before requesting feedback again."
+        : "AI review ready.",
+      review
+    };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown AI review error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown AI review error";
     console.error("AI review generation failed:", errorMessage);
-    const quotaUnavailable = /quota|billing|insufficient_quota|credits/i.test(errorMessage);
-    const freeModelUnavailable = /rate.?limit|429|temporarily unavailable|no endpoints/i.test(
+    const quotaUnavailable = /quota|billing|insufficient_quota|credits/i.test(
+      errorMessage
+    );
+    const freeModelUnavailable =
+      /rate.?limit|429|temporarily unavailable|no endpoints/i.test(
+        errorMessage
+      );
+    const attachmentUnavailable = /handwritten note attachment/i.test(
       errorMessage
     );
 
     return {
       ok: false,
       fallback: true,
-      message: quotaUnavailable
-        ? "AI review is unavailable because this OpenRouter account has no remaining credits. Add credits or switch to a free model, then retry."
-        : freeModelUnavailable
-          ? "The free AI model is busy right now. Your work is saved, so wait a moment and retry."
-          : "AI review is temporarily unavailable. Your work is saved, and you can finish without it."
+      message: attachmentUnavailable
+        ? "A handwritten note could not be prepared for AI review. Remove it, upload it again, then retry."
+        : quotaUnavailable
+          ? "AI review is unavailable because this OpenRouter account has no remaining credits. Add credits or switch to a free model, then retry."
+          : freeModelUnavailable
+            ? "The free AI model is busy right now. Your work is saved, so wait a moment and retry."
+            : "AI review is temporarily unavailable. Your work is saved, and you can finish without it."
     };
   }
 }
 
-export async function completeSession(input: unknown): Promise<WorkspaceActionResult> {
+export async function completeSession(
+  input: unknown
+): Promise<WorkspaceActionResult> {
   const parsed = completeSessionSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -906,12 +1024,14 @@ export async function completeSession(input: unknown): Promise<WorkspaceActionRe
 
   const focusHasEnded =
     Boolean(session.focus_finished_at) ||
-    (session.focus_ends_at && Date.now() >= new Date(session.focus_ends_at).getTime());
+    (session.focus_ends_at &&
+      Date.now() >= new Date(session.focus_ends_at).getTime());
 
   if (!focusHasEnded) {
     return {
       ok: false,
-      message: "Finish the focus timer or use End focus early before completing the session."
+      message:
+        "Finish the focus timer or use End focus early before completing the session."
     };
   }
 
@@ -930,8 +1050,7 @@ export async function completeSession(input: unknown): Promise<WorkspaceActionRe
   const now = new Date().toISOString();
   const actualFocusSeconds =
     session.actual_focus_seconds ??
-    session.duration_minutes * 60 +
-      (session.extension_used ? 5 * 60 : 0);
+    session.duration_minutes * 60 + (session.extension_used ? 5 * 60 : 0);
   const { error } = await supabase
     .from("research_sessions")
     .update({

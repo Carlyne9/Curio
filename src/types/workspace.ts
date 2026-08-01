@@ -44,11 +44,15 @@ export type Reflection = {
 };
 
 export type ResearchSessionReviewInput = {
+  attachments: Array<{
+    data: Uint8Array;
+    fileName: string;
+    mimeType: string;
+  }>;
   topic: string;
   challenge: string;
   notes: string;
   sources: string[];
   keyClaims: string[];
   reflection: string;
-  safetyIdentifier: string;
 };
