@@ -30,6 +30,10 @@ import {
   Zap
 } from "lucide-react";
 
+import { CurioLogo } from "@/components/brand/curio-logo";
+import { CurioLogoFilled } from "@/components/brand/curio-logo-filled";
+import { CurioMarkFilled } from "@/components/brand/curio-mark-filled";
+import { CurioMarkIcon } from "@/components/brand/curio-mark-icon";
 import { cn } from "@/lib/utils";
 
 import styles from "./design-system.module.css";
@@ -253,6 +257,22 @@ const categoryIcons = [
   }
 ] as const;
 
+const logoColors = [
+  { label: "Multicoloured", value: "multicoloured", swatch: "#6457F9", tile: "#FFFFFF" },
+  { label: "Violet", value: "violet", swatch: "#6457F9", tile: "#FFFFFF" },
+  { label: "Grey", value: "grey", swatch: "#6F6A63", tile: "#FFFFFF" },
+  { label: "Black", value: "black", swatch: "#1F2430", tile: "#FFFFFF" },
+  { label: "White", value: "white", swatch: "#F8FAFC", tile: "#1F2430" }
+] as const;
+
+const filledLogoColors = [
+  { label: "Violet", value: "violet", tile: "#FFFFFF" },
+  { label: "Blue", value: "blue", tile: "#FFFFFF" },
+  { label: "Grey", value: "grey", tile: "#FFFFFF" },
+  { label: "Black", value: "black", tile: "#FFFFFF" },
+  { label: "White", value: "white", tile: "#1F2430" }
+] as const;
+
 export default function DesignSystemPage() {
   return (
     <main className={styles.page}>
@@ -285,6 +305,10 @@ export default function DesignSystemPage() {
             <a href="#components">
               <Menu aria-hidden="true" size={17} />
               Components
+            </a>
+            <a href="#logo">
+              <Sparkles aria-hidden="true" size={17} />
+              Logo
             </a>
             <a href="#icons">
               <Zap aria-hidden="true" size={17} />
@@ -795,10 +819,193 @@ export default function DesignSystemPage() {
             </article>
           </section>
 
+          {/* Logo */}
+          <section className={styles.section} id="logo">
+            <div className={styles.sectionHeader}>
+              <h3 className={styles.eyebrow}>06 / Logo</h3>
+            </div>
+
+            <article className={cn(styles.surface, styles.componentPanelV2)}>
+              <p className={styles.panelLabel}>Full logo (mark + wordmark)</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                {logoColors.map((color) => (
+                  <div
+                    key={color.value}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "20px 18px",
+                      borderRadius: 16,
+                      background: color.tile
+                    }}
+                  >
+                    <Image
+                      alt={`Curio full logo, ${color.label}`}
+                      height={30}
+                      src={`/logo/full-logo-${color.value}.svg`}
+                      style={{ display: "block" }}
+                      width={85}
+                    />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: color.tile === "#FFFFFF" ? "var(--ds-ink-soft)" : "#FFFFFF"
+                      }}
+                    >
+                      {color.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className={cn(styles.surface, styles.componentPanelV2)}>
+              <p className={styles.panelLabel}>Full logo, filled mark (new — compare)</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                {logoColors
+                  .filter((color) => color.value !== "multicoloured")
+                  .map((color) => (
+                    <div
+                      key={color.value}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "20px 18px",
+                        borderRadius: 16,
+                        background: color.tile
+                      }}
+                    >
+                      <Image
+                        alt={`Curio full logo, filled mark, ${color.label}`}
+                        height={30}
+                        src={`/logo/full-logo-filled-${color.value}.svg`}
+                        style={{ display: "block" }}
+                        width={84}
+                      />
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          color: color.tile === "#FFFFFF" ? "var(--ds-ink-soft)" : "#FFFFFF"
+                        }}
+                      >
+                        {color.label}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </article>
+
+            <article className={cn(styles.surface, styles.componentPanelV2)}>
+              <p className={styles.panelLabel}>Logo only (mark, outline)</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                {logoColors.map((color) => (
+                  <div
+                    key={color.value}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "20px 18px",
+                      borderRadius: 16,
+                      background: color.tile
+                    }}
+                  >
+                    <Image
+                      alt={`Curio mark, ${color.label}`}
+                      height={30}
+                      src={`/logo/logo-only-${color.value}.svg`}
+                      style={{ display: "block" }}
+                      width={38}
+                    />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: color.tile === "#FFFFFF" ? "var(--ds-ink-soft)" : "#FFFFFF"
+                      }}
+                    >
+                      {color.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className={cn(styles.surface, styles.componentPanelV2)}>
+              <p className={styles.panelLabel}>Logo filled (mark, solid)</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                {filledLogoColors.map((color) => (
+                  <div
+                    key={color.value}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "20px 18px",
+                      borderRadius: 16,
+                      background: color.tile
+                    }}
+                  >
+                    <Image
+                      alt={`Curio filled mark, ${color.label}`}
+                      height={30}
+                      src={`/logo/logo-filled-${color.value}.svg`}
+                      style={{ display: "block" }}
+                      width={36}
+                    />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: color.tile === "#FFFFFF" ? "var(--ds-ink-soft)" : "#FFFFFF"
+                      }}
+                    >
+                      {color.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className={cn(styles.surface, styles.componentPanelV2)}>
+              <p className={styles.panelLabel}>Live components (currentColor)</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  gap: 32,
+                  color: "#6457F9"
+                }}
+              >
+                <CurioLogo style={{ height: 30, width: "auto" }} />
+                <CurioLogoFilled style={{ height: 30, width: "auto" }} />
+                <CurioMarkIcon style={{ height: 30, width: "auto" }} />
+                <CurioMarkFilled style={{ height: 30, width: "auto" }} />
+              </div>
+              <p className={styles.componentCaption}>
+                <code>CurioLogo</code>, <code>CurioLogoFilled</code>,{" "}
+                <code>CurioMarkIcon</code>, <code>CurioMarkFilled</code> —
+                src/components/brand/. All use{" "}
+                <code>currentColor</code>, so they inherit whatever text color
+                wraps them (used in the app shell and landing nav via{" "}
+                <code>text-primary</code>).
+              </p>
+            </article>
+          </section>
+
           {/* Icons */}
           <section className={styles.section} id="icons">
             <div className={styles.sectionHeader}>
-              <h3 className={styles.eyebrow}>06 / Iconography</h3>
+              <h3 className={styles.eyebrow}>07 / Iconography</h3>
             </div>
             <div className={styles.categoryIconPreview}>
               <div className={styles.categoryIconPreviewHeader}>

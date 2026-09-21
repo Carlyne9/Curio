@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, RotateCw } from "lucide-react";
@@ -45,46 +45,44 @@ const categoryDescriptions: Record<string, string> = {
   Culture: "Customs, belief, and the stories people share"
 };
 
-const wheelColors = ["#6457f9", "#f7c873", "#e98aa4", "#62b6a6"];
 const quickDurations = [15, 25, 45, 60];
+const SPIN_TICKS = 26;
+const SPIN_START_DELAY = 45;
+const SPIN_END_DELAY = 320;
 
 export function TopicDiscovery({ error }: TopicDiscoveryProps) {
   const prefersReducedMotion = useReducedMotion();
   const [step, setStep] = useState<DiscoveryStep>("field");
   const [category, setCategory] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<TopicSeed | null>(null);
-  const [pendingTopic, setPendingTopic] = useState<TopicSeed | null>(null);
-  const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
-  const [pendingNumber, setPendingNumber] = useState<number | null>(null);
+  const [landedTopic, setLandedTopic] = useState<TopicSeed | null>(null);
+  const [hasSpinResult, setHasSpinResult] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     ResearchDifficulty | ""
   >("");
   const [durationMinutes, setDurationMinutes] = useState(25);
-  const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
+  const spinTimeoutRef = useRef<number | null>(null);
 
   const categoryTopics = useMemo(
     () => topicSeeds.filter((topic) => topic.category === category),
     [category]
   );
-  const wheelSlots = categoryTopics.slice(0, 12);
-  const segmentSize = 30;
-  const wheelBackground = `conic-gradient(${wheelSlots
-    .map(
-      (_, index) =>
-        `${wheelColors[index % wheelColors.length]} ${index * segmentSize}deg ${(index + 1) * segmentSize}deg`
-    )
-    .join(", ")})`;
   const selectedDifficultyOption = researchDifficulties.find(
     (difficulty) => difficulty.value === selectedDifficulty
   );
 
+  useEffect(() => {
+    return () => {
+      if (spinTimeoutRef.current) window.clearTimeout(spinTimeoutRef.current);
+    };
+  }, []);
+
   function chooseCategory(nextCategory: string) {
     setCategory(nextCategory);
     setSelectedTopic(null);
-    setPendingTopic(null);
-    setSelectedNumber(null);
-    setPendingNumber(null);
+    setLandedTopic(null);
+    setHasSpinResult(false);
     setSelectedDifficulty("");
     setIsSpinning(false);
     setStep("difficulty");
@@ -92,73 +90,87 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
 
   function returnToFields() {
     setSelectedTopic(null);
-    setPendingTopic(null);
-    setSelectedNumber(null);
-    setPendingNumber(null);
+    setLandedTopic(null);
+    setHasSpinResult(false);
     setSelectedDifficulty("");
     setIsSpinning(false);
     setStep("field");
   }
 
-  function spinWheel() {
-    if (wheelSlots.length < 12 || !selectedDifficulty || isSpinning) {
+  function randomTopic(pool: TopicSeed[], exclude?: TopicSeed | null) {
+    if (pool.length <= 1) return pool[0];
+    let next = pool[Math.floor(Math.random() * pool.length)];
+    while (next.id === exclude?.id) {
+      next = pool[Math.floor(Math.random() * pool.length)];
+    }
+    return next;
+  }
+
+  function spinTopic() {
+    if (categoryTopics.length === 0 || isSpinning) {
       return;
     }
 
-    let selectedIndex = Math.floor(Math.random() * wheelSlots.length);
-
-    if (wheelSlots.length > 1 && selectedIndex + 1 === selectedNumber) {
-      selectedIndex = (selectedIndex + 1) % wheelSlots.length;
+    if (spinTimeoutRef.current) {
+      window.clearTimeout(spinTimeoutRef.current);
     }
 
-    const nextTopic = wheelSlots[selectedIndex];
-
-    if (!nextTopic) {
-      return;
-    }
-
-    const targetRotation =
-      360 - (selectedIndex * segmentSize + segmentSize / 2);
-    setPendingTopic(nextTopic);
-    setPendingNumber(selectedIndex + 1);
-    setSelectedTopic(null);
-    setSelectedNumber(null);
     setIsSpinning(true);
-    setRotation((current) => {
-      const normalizedRotation = ((current % 360) + 360) % 360;
-      const alignment = (targetRotation - normalizedRotation + 360) % 360;
-      return current + (prefersReducedMotion ? 360 : 1440) + alignment;
-    });
+    setHasSpinResult(false);
+
+    const finalTopic = randomTopic(categoryTopics, landedTopic);
+
+    if (prefersReducedMotion) {
+      setLandedTopic(finalTopic);
+      setIsSpinning(false);
+      setHasSpinResult(true);
+      return;
+    }
+
+    let tick = 0;
+    let lastShown = landedTopic;
+
+    const step = () => {
+      const shown = randomTopic(categoryTopics, lastShown);
+      lastShown = shown;
+      setLandedTopic(shown);
+      tick += 1;
+
+      if (tick < SPIN_TICKS) {
+        const progress = tick / SPIN_TICKS;
+        const delay =
+          SPIN_START_DELAY + progress * progress * (SPIN_END_DELAY - SPIN_START_DELAY);
+        spinTimeoutRef.current = window.setTimeout(step, delay);
+      } else {
+        setLandedTopic(finalTopic);
+        setIsSpinning(false);
+        setHasSpinResult(true);
+      }
+    };
+
+    step();
   }
 
   function chooseDifficulty(difficulty: ResearchDifficulty) {
     setSelectedDifficulty(difficulty);
     setSelectedTopic(null);
-    setPendingTopic(null);
-    setSelectedNumber(null);
-    setPendingNumber(null);
+    setLandedTopic(null);
+    setHasSpinResult(false);
     setStep("topic");
   }
 
   function returnToDifficulty() {
     setSelectedTopic(null);
-    setPendingTopic(null);
-    setSelectedNumber(null);
-    setPendingNumber(null);
+    setLandedTopic(null);
+    setHasSpinResult(false);
     setIsSpinning(false);
     setStep("difficulty");
   }
 
-  function finishSpin() {
-    if (!isSpinning) {
-      return;
-    }
-
-    setSelectedTopic(pendingTopic);
-    setSelectedNumber(pendingNumber);
-    setPendingTopic(null);
-    setPendingNumber(null);
-    setIsSpinning(false);
+  function acceptTopic() {
+    if (!landedTopic) return;
+    setSelectedTopic(landedTopic);
+    setStep("timer");
   }
 
   return (
@@ -347,117 +359,83 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                   Spin for a topic.
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  The topics stay hidden. When the pointer lands on a number,
-                  Curio reveals the topic behind it.
+                  Topics stay hidden until you spin — watch them cycle until
+                  one sticks.
                 </p>
               </header>
 
-              <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-                <Card className="overflow-hidden">
-                  <CardContent className="px-2 py-6 sm:px-6 sm:py-12">
-                    <div className="relative mx-auto aspect-square w-full max-w-[34rem]">
-                      <div className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 border-x-[13px] border-t-[24px] border-x-transparent border-t-foreground sm:border-x-[18px] sm:border-t-[32px]" />
-                      <motion.div
-                        animate={{ rotate: rotation }}
-                        className="absolute inset-2 rounded-full border-[10px] border-card shadow-2xl shadow-black/15 sm:inset-3 sm:border-[14px]"
-                        onAnimationComplete={finishSpin}
-                        style={{ background: wheelBackground }}
-                        transition={{
-                          duration: prefersReducedMotion ? 0.15 : 2.8,
-                          ease: [0.12, 0.8, 0.2, 1]
-                        }}
-                      >
-                        {wheelSlots.map((topic, index) => {
-                          const angle = index * segmentSize + segmentSize / 2;
-                          const radians = (angle * Math.PI) / 180;
-                          const left = 50 + 40 * Math.sin(radians);
-                          const top = 50 - 40 * Math.cos(radians);
+              <div className="mx-auto max-w-2xl">
+                <p className="mb-4 text-center text-sm font-medium text-muted-foreground">
+                  {selectedDifficultyOption?.label} difficulty · {category}
+                </p>
 
-                          return (
-                            <span
-                              className="absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-card text-xs font-bold shadow sm:h-11 sm:w-11 sm:text-sm"
-                              key={topic.id}
-                              style={{ left: `${left}%`, top: `${top}%` }}
-                            >
-                              {index + 1}
-                            </span>
-                          );
-                        })}
-                      </motion.div>
-                      <Button
-                        className="absolute left-1/2 top-1/2 z-30 h-20 w-20 -translate-x-1/2 -translate-y-1/2 px-3 text-xs shadow-xl sm:h-32 sm:w-32 sm:text-sm"
-                        disabled={!selectedDifficulty || isSpinning}
-                        onClick={spinWheel}
-                        type="button"
-                      >
-                        <RotateCw
-                          className="mr-1 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5"
-                          aria-hidden="true"
-                        />
-                        {isSpinning ? "Spinning" : "Spin"}
+                <Card
+                  className={
+                    hasSpinResult
+                      ? "overflow-hidden border-primary/40 shadow-[0_0_0_6px] shadow-primary/15 transition-[box-shadow,border-color] duration-200"
+                      : "overflow-hidden transition-[box-shadow,border-color] duration-200"
+                  }
+                >
+                  <CardContent className="flex min-h-[240px] items-center justify-center p-10 text-center">
+                    <motion.p
+                      animate={{ opacity: 1, y: 0 }}
+                      className={
+                        landedTopic
+                          ? "max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl"
+                          : "text-lg text-muted-foreground"
+                      }
+                      initial={{ opacity: 0, y: 3 }}
+                      key={landedTopic?.id ?? "placeholder"}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
+                    >
+                      {landedTopic?.title ?? "Tap spin for topic"}
+                    </motion.p>
+                  </CardContent>
+                </Card>
+
+                {hasSpinResult && landedTopic ? (
+                  <div className="mt-6 rounded-2xl bg-muted p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                      {selectedDifficulty} challenge
+                    </p>
+                    <p className="mt-2 text-sm leading-6">
+                      {buildDifficultyChallenge(
+                        landedTopic.challenge,
+                        selectedDifficulty
+                      )}
+                    </p>
+                  </div>
+                ) : null}
+
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  {hasSpinResult ? (
+                    <>
+                      <Button onClick={acceptTopic} type="button">
+                        Accept topic
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="lg:sticky lg:top-6">
-                  <CardHeader>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-                      Selected level
-                    </p>
-                    <CardTitle className="mt-2 text-2xl">
-                      {selectedDifficultyOption?.label}
-                    </CardTitle>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {selectedDifficultyOption?.description}
-                    </p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {selectedTopic ? (
-                      <div className="space-y-4 border-t pt-4">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-                            Number {selectedNumber} reveals
-                          </p>
-                          <h2 className="mt-2 text-2xl font-semibold">
-                            {selectedTopic.title}
-                          </h2>
-                        </div>
-                        <div className="rounded-2xl bg-muted p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                            {selectedDifficulty} challenge
-                          </p>
-                          <p className="mt-2 text-sm leading-6">
-                            {buildDifficultyChallenge(
-                              selectedTopic.challenge,
-                              selectedDifficulty
-                            )}
-                          </p>
-                        </div>
-                        <div className="grid gap-2">
-                          <Button
-                            onClick={() => setStep("timer")}
-                            type="button"
-                          >
-                            Accept topic
-                          </Button>
-                          <Button
-                            onClick={spinWheel}
-                            type="button"
-                            variant="secondary"
-                          >
-                            Spin again
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="border-t pt-4 text-sm leading-6 text-muted-foreground">
-                        Spin the wheel to reveal one of twelve hidden {category}{" "}
-                        topics.
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
+                      <Button
+                        onClick={spinTopic}
+                        type="button"
+                        variant="secondary"
+                      >
+                        <RotateCw className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Spin again
+                      </Button>
+                    </>
+                  ) : (
+                    <Button disabled={isSpinning} onClick={spinTopic} type="button">
+                      <RotateCw
+                        className={
+                          isSpinning
+                            ? "mr-2 h-4 w-4 animate-spin"
+                            : "mr-2 h-4 w-4"
+                        }
+                        aria-hidden="true"
+                      />
+                      {isSpinning ? "Spinning" : "Spin for a topic"}
+                    </Button>
+                  )}
+                </div>
               </div>
             </motion.section>
           ) : null}

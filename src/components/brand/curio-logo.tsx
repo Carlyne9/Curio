@@ -1,15 +1,17 @@
 type CurioLogoProps = {
   className?: string;
+  style?: React.CSSProperties;
 };
 
 /** The Curio brain + wordmark lockup. Inherits color via currentColor. */
-export function CurioLogo({ className }: CurioLogoProps) {
+export function CurioLogo({ className, style }: CurioLogoProps) {
   return (
     <svg
       aria-label="Curio"
       className={className}
       fill="none"
       role="img"
+      style={style}
       viewBox="0 0 85 30"
       xmlns="http://www.w3.org/2000/svg"
     >

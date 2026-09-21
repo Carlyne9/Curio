@@ -1,12 +1,15 @@
 import Link from "next/link";
 
+import { CurioLogoFilled } from "@/components/brand/curio-logo-filled";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8 sm:px-6 sm:py-10">
       <nav className="flex items-center justify-between">
-        <span className="text-lg font-semibold">Curio</span>
+        <Link href="/" className="text-primary">
+          <CurioLogoFilled className="h-11 w-auto" />
+        </Link>
         <Link
           href="/login"
           className="text-sm font-medium text-muted-foreground"

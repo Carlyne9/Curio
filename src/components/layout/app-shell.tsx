@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { logout } from "@/app/(auth)/actions";
-import { CurioLogo } from "@/components/brand/curio-logo";
+import { CurioLogoFilled } from "@/components/brand/curio-logo-filled";
 import { Button } from "@/components/ui/button";
 
 type AppShellProps = {
@@ -21,7 +21,7 @@ export function AppShell({ children, title }: AppShellProps) {
       <header className="mb-8 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Link href="/" className="inline-block text-primary">
-            <CurioLogo className="h-[30px] w-auto" />
+            <CurioLogoFilled className="h-11 w-auto" />
           </Link>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
             {title}

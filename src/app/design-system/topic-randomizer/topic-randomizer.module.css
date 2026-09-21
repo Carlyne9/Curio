@@ -4,22 +4,22 @@
   --line: #e2dacf;
   --surface: #fffdf8;
   --violet: #6457f9;
+  --electric: #3564ff;
   --violet-soft: #efebff;
+  display: flex;
   min-height: 100vh;
+  flex-direction: column;
   background: #fbfaf7;
+  padding: 24px 24px 0;
   color: var(--ink);
-}
-
-.shell {
-  margin: 0 auto;
-  max-width: 720px;
-  padding: 40px 24px 80px;
 }
 
 .back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin: 0 auto;
+  width: fit-content;
   color: var(--ink-soft);
   font-size: 13px;
   font-weight: 600;
@@ -31,7 +31,8 @@
 }
 
 .header {
-  margin: 28px 0 36px;
+  margin: 24px auto 0;
+  max-width: 720px;
   text-align: center;
 }
 
@@ -59,25 +60,10 @@
   line-height: 1.6;
 }
 
-.demo {
-  display: grid;
-  justify-items: center;
-  gap: 24px;
-}
-
-.summary {
-  max-width: 360px;
-  text-align: center;
-}
-
-.summary strong {
-  display: block;
-  font-size: 15px;
-}
-
-.summary p {
-  margin-top: 6px;
-  color: var(--ink-soft);
-  font-size: 13px;
-  line-height: 1.55;
+.centerArea {
+  display: flex;
+  min-height: 46vh;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0 64px;
 }
