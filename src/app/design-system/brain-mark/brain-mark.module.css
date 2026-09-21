@@ -1,0 +1,92 @@
+.page {
+  --ink: #1f2430;
+  --ink-soft: #6f6a63;
+  --line: #e2dacf;
+  --violet: #6457f9;
+  min-height: 100vh;
+  background: #fbfaf7;
+  color: var(--ink);
+}
+
+.shell {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 40px 24px 80px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.header {
+  margin: 28px 0 36px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--violet);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.sub code {
+  border-radius: 4px;
+  background: var(--line);
+  padding: 2px 5px;
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px 12px;
+}
+
+.cardLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { logout } from "@/app/(auth)/actions";
+import { CurioLogo } from "@/components/brand/curio-logo";
 import { Button } from "@/components/ui/button";
 
 type AppShellProps = {
@@ -19,11 +20,8 @@ export function AppShell({ children, title }: AppShellProps) {
     <main className="mx-auto min-h-screen max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
       <header className="mb-8 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <Link
-            href="/"
-            className="text-sm font-semibold uppercase tracking-[0.25em] text-primary"
-          >
-            Curio
+          <Link href="/" className="inline-block text-primary">
+            <CurioLogo className="h-[30px] w-auto" />
           </Link>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
             {title}

@@ -1,8 +1,13 @@
 # Curio — Design System
 
-Status: Draft  
-Version: 0.1  
+Status: Experimental
+Version: 0.2
 Scope: MVP One
+
+Live experiment: `/design-system`
+Interactive product prototype: `/design-system/prototype`
+
+The experimental page is intentionally isolated from production components until its direction is approved.
 
 ---
 
@@ -39,20 +44,20 @@ Every visual decision should help users feel:
 
 ### Core Palette
 
-| Token | Usage | Suggested Value |
-| --- | --- | --- |
-| `background` | Main app background | `#FBFAF7` |
-| `foreground` | Primary text | `#1F2430` |
-| `card` | Panels and elevated surfaces | `#FFFDF8` |
-| `muted` | Soft backgrounds | `#F0ECE5` |
-| `muted-foreground` | Secondary text | `#6F6A63` |
-| `border` | Dividers and outlines | `#E2DACF` |
-| `primary` | Main action, focus states | `#6457F9` |
-| `primary-foreground` | Text on primary | `#FFFFFF` |
-| `accent` | Delight, highlights, rewards | `#F7C873` |
-| `accent-foreground` | Text on accent | `#2C2617` |
-| `destructive` | Errors and destructive states | `#D94B4B` |
-| `ring` | Focus outline | `#8B7FFF` |
+| Token                | Usage                         | Suggested Value |
+| -------------------- | ----------------------------- | --------------- |
+| `background`         | Main app background           | `#FBFAF7`       |
+| `foreground`         | Primary text                  | `#1F2430`       |
+| `card`               | Panels and elevated surfaces  | `#FFFDF8`       |
+| `muted`              | Soft backgrounds              | `#F0ECE5`       |
+| `muted-foreground`   | Secondary text                | `#6F6A63`       |
+| `border`             | Dividers and outlines         | `#E2DACF`       |
+| `primary`            | Main action, focus states     | `#6457F9`       |
+| `primary-foreground` | Text on primary               | `#FFFFFF`       |
+| `accent`             | Delight, highlights, rewards  | `#F7C873`       |
+| `accent-foreground`  | Text on accent                | `#2C2617`       |
+| `destructive`        | Errors and destructive states | `#D94B4B`       |
+| `ring`               | Focus outline                 | `#8B7FFF`       |
 
 ### Color Principles
 
@@ -80,15 +85,15 @@ Fallback:
 
 ### Type Scale
 
-| Role | Suggested Classes |
-| --- | --- |
-| Display | `text-5xl sm:text-7xl font-semibold tracking-tight` |
-| Page title | `text-3xl font-semibold tracking-tight` |
-| Section title | `text-base font-semibold` |
-| Body | `text-base leading-7` |
-| Small body | `text-sm leading-6` |
-| Label | `text-sm font-medium` |
-| Eyebrow | `text-sm font-semibold uppercase tracking-[0.25em]` |
+| Role          | Suggested Classes                                   |
+| ------------- | --------------------------------------------------- |
+| Display       | `text-5xl sm:text-7xl font-semibold tracking-tight` |
+| Page title    | `text-3xl font-semibold tracking-tight`             |
+| Section title | `text-base font-semibold`                           |
+| Body          | `text-base leading-7`                               |
+| Small body    | `text-sm leading-6`                                 |
+| Label         | `text-sm font-medium`                               |
+| Eyebrow       | `text-sm font-semibold uppercase tracking-[0.25em]` |
 
 ### Typography Principles
 
@@ -284,7 +289,25 @@ MVP One must include:
 
 ---
 
-## 11. Design Debt To Track
+## 11. Experimental Direction
+
+The current exploration combines three visual modes:
+
+- `Luminous precision` — recommended for product chrome, key actions, AI, and progress.
+- `Playful field notes` — recommended for onboarding, empty states, and encouragement.
+- `Soft 3D intelligence` — reserved for celebrations, milestones, and marketing moments.
+
+Recommended blend:
+
+- 75% luminous precision
+- 20% playful field notes
+- 5% soft 3D intelligence
+
+The experiment includes only Curio-relevant foundations and components from the Design System Checklist: color, typography, layout, spacing, elevation, motion, iconography, buttons, fields, selects, text areas, badges, alerts, tabs, progress, cards, navigation, and empty-state illustration direction.
+
+---
+
+## 12. Design Debt To Track
 
 - Final logo and wordmark
 - Illustration style

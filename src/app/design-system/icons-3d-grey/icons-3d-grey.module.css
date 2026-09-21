@@ -1,0 +1,113 @@
+.page {
+  --ink: #1f2430;
+  --ink-soft: #6f6a63;
+  --line: #e2dacf;
+  --violet: #6457f9;
+  min-height: 100vh;
+  background: #fbfaf7;
+  color: var(--ink);
+}
+
+.shell {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 40px 24px 80px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.header {
+  margin: 28px 0 36px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--violet);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.row {
+  margin-bottom: 28px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #fffdf8;
+  padding: 20px;
+}
+
+.rowLabel {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stage {
+  display: grid;
+  height: 140px;
+  width: 100%;
+  place-items: center;
+  border-radius: 16px;
+  background: #f5f4f2;
+}
+
+.stage img {
+  height: 96px;
+  width: 96px;
+  object-fit: contain;
+}
+
+.swatch span {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .swatches {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,83 @@
+.page {
+  --ink: #1f2430;
+  --ink-soft: #6f6a63;
+  --line: #e2dacf;
+  --surface: #fffdf8;
+  --violet: #6457f9;
+  --violet-soft: #efebff;
+  min-height: 100vh;
+  background: #fbfaf7;
+  color: var(--ink);
+}
+
+.shell {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 40px 24px 80px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.header {
+  margin: 28px 0 36px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--violet);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin: 0 auto;
+  max-width: 46rem;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.demo {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+}
+
+.summary {
+  max-width: 360px;
+  text-align: center;
+}
+
+.summary strong {
+  display: block;
+  font-size: 15px;
+}
+
+.summary p {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}

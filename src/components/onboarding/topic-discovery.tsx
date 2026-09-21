@@ -1,18 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowLeft,
-  Atom,
-  Cpu,
-  Globe2,
-  Music2,
-  Palette,
-  RotateCw,
-  Scale,
-  type LucideIcon
-} from "lucide-react";
+import { ArrowLeft, RotateCw } from "lucide-react";
 
 import { startSession } from "@/app/(app)/workspace/actions";
 import { Button } from "@/components/ui/button";
@@ -34,13 +25,24 @@ type TopicDiscoveryProps = {
 
 type DiscoveryStep = "field" | "difficulty" | "topic" | "timer";
 
-const categoryIcons: Record<string, LucideIcon> = {
-  Science: Atom,
-  Music: Music2,
-  Art: Palette,
-  Philosophy: Scale,
-  Technology: Cpu,
-  Culture: Globe2
+const DISCOVERY_STAGES: DiscoveryStep[] = ["field", "difficulty", "topic", "timer"];
+
+const categoryIllustrations: Record<string, string> = {
+  Science: "/categories/science.webp",
+  Music: "/categories/music.webp",
+  Art: "/categories/art.webp",
+  Philosophy: "/categories/philosophy.webp",
+  Technology: "/categories/technology.webp",
+  Culture: "/categories/culture.webp"
+};
+
+const categoryDescriptions: Record<string, string> = {
+  Science: "Nature, discovery, and the physical world",
+  Music: "Sound, memory, and how we express ourselves",
+  Art: "Images, ideas, and visual culture",
+  Philosophy: "Meaning, ethics, and the nature of existence",
+  Technology: "Tools, systems, and how they shape society",
+  Culture: "Customs, belief, and the stories people share"
 };
 
 const wheelColors = ["#6457f9", "#f7c873", "#e98aa4", "#62b6a6"];
@@ -166,25 +168,28 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
           className="mb-8 flex items-center justify-center gap-2"
           aria-label="Onboarding progress"
         >
-          {["field", "difficulty", "topic", "timer"].map((stage, index) => {
-            const stages: DiscoveryStep[] = [
-              "field",
-              "difficulty",
-              "topic",
-              "timer"
-            ];
-            const currentIndex = stages.indexOf(step);
-            const isReached = index <= currentIndex;
+          {DISCOVERY_STAGES.map((stage, index) => {
+            const currentIndex = DISCOVERY_STAGES.indexOf(step);
+            const isCompleted = index < currentIndex;
+            const isActive = index === currentIndex;
 
             return (
-              <span
-                aria-hidden="true"
+              <motion.span
+                animate={{ width: isActive ? 64 : 32 }}
+                aria-label={
+                  isActive ? `Current step ${index + 1}` : undefined
+                }
+                aria-hidden={isActive ? undefined : true}
                 className={
-                  isReached
-                    ? "h-2 w-12 rounded-full bg-primary transition-colors"
-                    : "h-2 w-12 rounded-full bg-muted transition-colors"
+                  isCompleted || isActive
+                    ? "h-2 rounded-full bg-primary transition-colors"
+                    : "h-2 rounded-full bg-muted transition-colors"
                 }
                 key={stage}
+                transition={{
+                  duration: prefersReducedMotion ? 0 : 0.35,
+                  ease: [0.22, 1, 0.36, 1]
+                }}
               />
             );
           })}
@@ -206,10 +211,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
               transition={{ duration: prefersReducedMotion ? 0 : 0.25 }}
             >
               <header className="mx-auto mb-10 max-w-3xl text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary">
-                  Step 1 of 4
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
                   What are you curious about today?
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
@@ -219,7 +221,9 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {topicCategories.map((topicCategory) => {
-                  const Icon = categoryIcons[topicCategory] ?? Globe2;
+                  const illustrationSrc =
+                    categoryIllustrations[topicCategory] ??
+                    categoryIllustrations.Culture;
 
                   return (
                     <button
@@ -228,15 +232,20 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                       onClick={() => chooseCategory(topicCategory)}
                       type="button"
                     >
-                      <Icon
-                        className="mb-6 h-8 w-8 text-primary transition-transform group-hover:scale-110 sm:mb-10"
+                      <Image
+                        alt=""
                         aria-hidden="true"
+                        className="mb-6 h-16 w-16 object-contain transition-transform group-hover:scale-110 sm:mb-10 sm:h-20 sm:w-20"
+                        height={160}
+                        src={illustrationSrc}
+                        width={160}
                       />
                       <span className="text-xl font-semibold">
                         {topicCategory}
                       </span>
                       <span className="mt-2 block text-sm text-muted-foreground">
-                        12 starter topics
+                        {categoryDescriptions[topicCategory] ??
+                          categoryDescriptions.Culture}
                       </span>
                     </button>
                   );
@@ -263,10 +272,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
               </button>
 
               <header className="mx-auto mb-10 max-w-3xl text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary">
-                  Step 2 of 4 · {category}
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
                   Choose your research difficulty.
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
@@ -337,11 +343,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
               </button>
 
               <header className="mx-auto mb-8 max-w-3xl text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary">
-                  Step 3 of 4 · {category} ·{" "}
-                  <span className="capitalize">{selectedDifficulty}</span>
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
                   Spin for a topic.
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
@@ -478,10 +480,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
               </button>
 
               <header className="mx-auto mb-10 max-w-3xl text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary">
-                  Step 4 of 4
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
                   How long do you want to focus?
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
