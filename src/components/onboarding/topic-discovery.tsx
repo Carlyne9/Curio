@@ -6,8 +6,9 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, RotateCw } from "lucide-react";
 
 import { startSession } from "@/app/(app)/workspace/actions";
+import { DURATION_CONFIG, DurationPicker } from "@/components/onboarding/duration-picker";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   topicCategories,
   topicSeeds,
@@ -45,7 +46,6 @@ const categoryDescriptions: Record<string, string> = {
   Culture: "Customs, belief, and the stories people share"
 };
 
-const quickDurations = [15, 25, 45, 60];
 const SPIN_TICKS = 26;
 const SPIN_START_DELAY = 45;
 const SPIN_END_DELAY = 320;
@@ -153,6 +153,7 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
 
   function chooseDifficulty(difficulty: ResearchDifficulty) {
     setSelectedDifficulty(difficulty);
+    setDurationMinutes(DURATION_CONFIG[difficulty].defaultValue);
     setSelectedTopic(null);
     setLandedTopic(null);
     setHasSpinResult(false);
@@ -372,8 +373,8 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                 <Card
                   className={
                     hasSpinResult
-                      ? "overflow-hidden border-primary/40 shadow-[0_0_0_6px] shadow-primary/15 transition-[box-shadow,border-color] duration-200"
-                      : "overflow-hidden transition-[box-shadow,border-color] duration-200"
+                      ? "overflow-hidden border-2 border-primary shadow-[0_0_0_8px] shadow-primary/35 transition-[box-shadow,border-color] duration-200"
+                      : "overflow-hidden border-2 border-primary transition-[box-shadow,border-color] duration-200"
                   }
                 >
                   <CardContent className="flex min-h-[240px] items-center justify-center p-10 text-center">
@@ -467,81 +468,33 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                 </p>
               </header>
 
-              <Card className="mx-auto max-w-2xl">
-                <CardHeader className="text-center">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {selectedTopic.title} ·{" "}
-                    <span className="capitalize">{selectedDifficulty}</span>
-                  </p>
-                  <CardTitle className="mt-4 text-5xl tabular-nums sm:text-6xl">
-                    {durationMinutes}
-                    <span className="ml-2 text-xl font-medium text-muted-foreground">
-                      minutes
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-7">
-                  <div className="flex justify-between text-xs font-semibold text-muted-foreground">
-                    <span>10 min</span>
-                    <span>60 min</span>
-                  </div>
-                  <input
-                    aria-label="Session duration in minutes"
-                    className="w-full accent-primary"
-                    max="60"
-                    min="10"
-                    onChange={(event) =>
-                      setDurationMinutes(Number(event.target.value))
-                    }
-                    step="5"
-                    type="range"
-                    value={durationMinutes}
-                  />
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {quickDurations.map((duration) => (
-                      <button
-                        aria-pressed={durationMinutes === duration}
-                        className={
-                          durationMinutes === duration
-                            ? "rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-                            : "rounded-full bg-muted px-4 py-2 text-sm font-semibold"
-                        }
-                        key={duration}
-                        onClick={() => setDurationMinutes(duration)}
-                        type="button"
-                      >
-                        {duration} min
-                      </button>
-                    ))}
-                  </div>
+              <DurationPicker
+                difficulty={selectedDifficulty}
+                onChange={setDurationMinutes}
+                value={durationMinutes}
+              />
 
-                  <form action={startSession}>
-                    <input
-                      name="topicId"
-                      type="hidden"
-                      value={selectedTopic.id}
-                    />
-                    <input
-                      name="challengeId"
-                      type="hidden"
-                      value={selectedTopic.challengeId}
-                    />
-                    <input
-                      name="difficultyLevel"
-                      type="hidden"
-                      value={selectedDifficulty}
-                    />
-                    <input
-                      name="durationMinutes"
-                      type="hidden"
-                      value={durationMinutes}
-                    />
-                    <Button className="w-full" type="submit">
-                      Start focus session
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
+              <form action={startSession} className="mx-auto mt-10 max-w-md">
+                <input name="topicId" type="hidden" value={selectedTopic.id} />
+                <input
+                  name="challengeId"
+                  type="hidden"
+                  value={selectedTopic.challengeId}
+                />
+                <input
+                  name="difficultyLevel"
+                  type="hidden"
+                  value={selectedDifficulty}
+                />
+                <input
+                  name="durationMinutes"
+                  type="hidden"
+                  value={durationMinutes}
+                />
+                <Button className="w-full" type="submit">
+                  Start focus session
+                </Button>
+              </form>
             </motion.section>
           ) : null}
         </AnimatePresence>
