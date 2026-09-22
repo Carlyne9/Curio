@@ -51,8 +51,8 @@ export function getTimerSnapshot({
   return { breakSecondsRemaining, focusSecondsRemaining, isOnBreak };
 }
 
-export function getMidpointBreakMinutes(durationMinutes: number) {
-  return Math.min(5, Math.max(2, Math.round(durationMinutes * 0.1)));
+export function getMidpointBreakMinutes() {
+  return 5;
 }
 
 export function isMidpointBreakEligible({

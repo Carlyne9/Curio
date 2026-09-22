@@ -371,11 +371,12 @@ export function TopicDiscovery({ error }: TopicDiscoveryProps) {
                 </p>
 
                 <Card
-                  className={
-                    hasSpinResult
-                      ? "overflow-hidden border-2 border-primary shadow-[0_0_0_8px] shadow-primary/35 transition-[box-shadow,border-color] duration-200"
-                      : "overflow-hidden border-2 border-primary transition-[box-shadow,border-color] duration-200"
-                  }
+                  className="overflow-hidden border-2 border-primary transition-shadow duration-200"
+                  style={{
+                    boxShadow: hasSpinResult
+                      ? "0 0 0 8px rgba(100, 87, 249, 0.35)"
+                      : undefined
+                  }}
                 >
                   <CardContent className="flex min-h-[240px] items-center justify-center p-10 text-center">
                     <motion.p

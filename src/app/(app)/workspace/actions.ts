@@ -249,7 +249,7 @@ export async function takeMidpointBreak(
     return { ok: false, message: "Focus time has already ended." };
   }
 
-  const breakMinutes = getMidpointBreakMinutes(session.duration_minutes);
+  const breakMinutes = getMidpointBreakMinutes();
   const breakDurationSeconds = breakMinutes * 60;
   const breakEndsAt = new Date(now + breakDurationSeconds * 1000).toISOString();
   const focusEndsAt = new Date(

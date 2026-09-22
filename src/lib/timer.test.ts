@@ -9,10 +9,8 @@ import {
 } from "@/lib/timer";
 
 describe("focus timer", () => {
-  it("scales midpoint breaks between two and five minutes", () => {
-    expect(getMidpointBreakMinutes(10)).toBe(2);
-    expect(getMidpointBreakMinutes(25)).toBe(3);
-    expect(getMidpointBreakMinutes(60)).toBe(5);
+  it("always offers a flat five-minute midpoint break", () => {
+    expect(getMidpointBreakMinutes()).toBe(5);
   });
 
   it("keeps break time out of remaining focus time", () => {

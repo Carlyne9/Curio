@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState, useTransition } from "react";
 import {
+  ArrowLeft,
   Brain,
   CheckCircle2,
   CircleAlert,
@@ -120,6 +121,8 @@ export function ResearchWorkspaceShell({
   const [isAiReviewPending, startAiReviewTransition] = useTransition();
   const [aiReview, setAiReview] = useState<AiReview | null>(initialAiReview);
   const [aiFailureMessage, setAiFailureMessage] = useState("");
+  const [noteTab, setNoteTab] = useState<"typed" | "handwritten">("typed");
+  const [showCoachInfo, setShowCoachInfo] = useState(false);
   const [notes, setNotes] = useState(initialNotes);
   const [notesJson, setNotesJson] = useState<JSONContent | undefined>(
     initialNotesJson &&
@@ -167,6 +170,7 @@ export function ResearchWorkspaceShell({
   const [breakSecondsRemaining, setBreakSecondsRemaining] = useState(0);
   const [isOnBreak, setIsOnBreak] = useState(false);
   const [breakPromptDismissed, setBreakPromptDismissed] = useState(false);
+  const [showBreakDismiss, setShowBreakDismiss] = useState(false);
 
   useEffect(() => {
     if (!session.startedAt) {
@@ -214,7 +218,7 @@ export function ResearchWorkspaceShell({
   ).padStart(2, "0")}`;
   const focusEnded =
     Boolean(session.focusFinishedAt) || (!isOnBreak && secondsRemaining === 0);
-  const breakMinutes = getMidpointBreakMinutes(session.durationMinutes);
+  const breakMinutes = getMidpointBreakMinutes();
   const plannedFocusSeconds =
     session.durationMinutes * 60 + (session.extensionUsed ? 5 * 60 : 0);
   const breakEligible = isMidpointBreakEligible({
@@ -661,42 +665,33 @@ export function ResearchWorkspaceShell({
   return (
     <main className="min-h-screen px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-5">
+        <Link
+          aria-label="Back to dashboard"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border text-muted-foreground transition hover:border-primary hover:text-primary"
+          href="/dashboard"
+        >
+          <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+        </Link>
         <header className="rounded-[2rem] border bg-card p-5 shadow-sm shadow-black/5">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">
-                  {topic.category} ·{" "}
-                  <span className="capitalize">{topic.difficulty}</span>
-                </p>
-                <Link
-                  className="text-sm text-muted-foreground"
-                  href="/dashboard"
-                >
-                  Back to dashboard
-                </Link>
-              </div>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+              <h1 className="text-3xl font-semibold tracking-tight">
                 {topic.title}
               </h1>
-              <p className="mt-2 max-w-3xl text-muted-foreground">
-                Challenge: {topic.challenge}
+              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Research this
+              </p>
+              <p className="mt-1 max-w-3xl text-muted-foreground">
+                {topic.challenge}
               </p>
             </div>
             <div className="flex w-full items-center justify-center gap-3 rounded-full bg-muted px-4 py-3 sm:w-auto">
-              <Clock3 className="h-5 w-5 text-primary" aria-hidden="true" />
-              <div>
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {isOnBreak
-                    ? "Break"
-                    : focusEnded
-                      ? "Focus complete"
-                      : "Focus"}
-                </span>
-                <span className="text-2xl font-semibold tabular-nums">
-                  {formattedTime}
-                </span>
-              </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
+                <Clock3 className="h-5 w-5 text-primary" aria-hidden="true" />
+              </span>
+              <span className="text-2xl font-semibold tabular-nums">
+                {formattedTime}
+              </span>
             </div>
           </div>
           <div className="mt-5 h-2 overflow-hidden rounded-full bg-muted">
@@ -708,7 +703,7 @@ export function ResearchWorkspaceShell({
             />
           </div>
           {isOnBreak ? (
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <Coffee
                   className="mt-0.5 h-5 w-5 text-primary"
@@ -723,59 +718,97 @@ export function ResearchWorkspaceShell({
                 </div>
               </div>
               <Button
+                className="rounded-full border border-primary bg-transparent text-primary hover:bg-primary/10"
                 disabled={isPending}
                 onClick={handleResumeFocus}
                 type="button"
-                variant="secondary"
+                variant="ghost"
               >
                 Resume focus
               </Button>
             </div>
           ) : breakEligible ? (
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl border bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <Coffee
-                  className="mt-0.5 h-5 w-5 text-primary"
-                  aria-hidden="true"
-                />
-                <div>
-                  <p className="font-semibold">You are halfway there</p>
-                  <p className="text-sm text-muted-foreground">
-                    Take one optional {breakMinutes}-minute break, or keep your
-                    momentum.
-                  </p>
+            <div
+              className="group relative mt-4 rounded-2xl border bg-background p-4"
+              onClick={() => setShowBreakDismiss((prev) => !prev)}
+              onMouseEnter={() => setShowBreakDismiss(true)}
+              onMouseLeave={() => setShowBreakDismiss(false)}
+            >
+              <button
+                aria-label="Dismiss"
+                className={
+                  showBreakDismiss
+                    ? "absolute -right-2 -top-2 flex h-6 w-6 scale-100 items-center justify-center rounded-full border bg-card text-muted-foreground opacity-100 shadow-sm transition-all duration-150 hover:text-foreground"
+                    : "absolute -right-2 -top-2 flex h-6 w-6 scale-75 items-center justify-center rounded-full border bg-card text-muted-foreground opacity-0 shadow-sm transition-all duration-150"
+                }
+                disabled={isPending}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setBreakPromptDismissed(true);
+                }}
+                type="button"
+              >
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
+              </button>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <Coffee
+                    className="mt-0.5 h-5 w-5 text-primary"
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <p className="font-semibold">You are halfway there</p>
+                    <p className="text-sm text-muted-foreground">
+                      Take a {breakMinutes}-minute break, or keep going.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
                 <Button
                   disabled={isPending}
-                  onClick={handleTakeBreak}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleTakeBreak();
+                  }}
                   type="button"
-                  variant="secondary"
                 >
-                  Take {breakMinutes}-minute break
-                </Button>
-                <Button
-                  disabled={isPending}
-                  onClick={() => setBreakPromptDismissed(true)}
-                  type="button"
-                  variant="ghost"
-                >
-                  Keep focusing
+                  Take a {breakMinutes}-minute break
                 </Button>
               </div>
+            </div>
+          ) : null}
+          {focusEnded ? (
+            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold">
+                  {session.endedEarly ? "Focus ended early" : "Focus complete"}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Your notes are safe. Move on to reflection whenever
+                  you&apos;re ready.
+                </p>
+              </div>
+              {!session.endedEarly && !session.extensionUsed ? (
+                <Button
+                  disabled={isPending}
+                  onClick={handleAddFiveMinutes}
+                  type="button"
+                >
+                  <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Add 5 minutes
+                </Button>
+              ) : null}
             </div>
           ) : null}
           {!focusEnded && !isOnBreak ? (
             <div className="mt-3 flex justify-end">
               <Button
-                className="text-muted-foreground"
+                className="text-xs text-muted-foreground/60 hover:text-muted-foreground"
                 disabled={isPending}
                 onClick={handleFinishFocusEarly}
                 type="button"
                 variant="ghost"
               >
-                <CircleStop className="mr-2 h-4 w-4" aria-hidden="true" />
+                <CircleStop className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                 End focus early
               </Button>
             </div>
@@ -817,9 +850,9 @@ export function ResearchWorkspaceShell({
                             type="url"
                             value={editingSourceUrl}
                           />
-                          <input
+                          <textarea
                             aria-label="Source note"
-                            className="rounded-xl border bg-background px-3 py-2 text-sm"
+                            className="min-h-16 resize-y rounded-xl border bg-background px-3 py-2 text-sm"
                             onChange={(event) =>
                               setEditingSourceNote(event.target.value)
                             }
@@ -926,8 +959,8 @@ export function ResearchWorkspaceShell({
                       type="url"
                       value={sourceUrl}
                     />
-                    <input
-                      className="rounded-xl border bg-background px-3 py-2 text-sm"
+                    <textarea
+                      className="min-h-16 resize-y rounded-xl border bg-background px-3 py-2 text-sm"
                       onChange={(event) => setSourceNote(event.target.value)}
                       placeholder="Why it matters (optional)"
                       value={sourceNote}
@@ -947,6 +980,9 @@ export function ResearchWorkspaceShell({
             <Card>
               <CardHeader>
                 <CardTitle>Key Claims</CardTitle>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Short, source-backed assertions — quality over quantity.
+                </p>
               </CardHeader>
               <CardContent className="space-y-3">
                 {initialKeyClaims.map((keyClaim) =>
@@ -958,7 +994,7 @@ export function ResearchWorkspaceShell({
                     >
                       <textarea
                         aria-label="Key claim"
-                        className="min-h-20 rounded-xl border bg-background px-3 py-2 text-sm"
+                        className="min-h-32 resize-y rounded-xl border bg-background px-3 py-2 text-sm"
                         onChange={(event) =>
                           setEditingClaim(event.target.value)
                         }
@@ -1067,7 +1103,7 @@ export function ResearchWorkspaceShell({
                   onSubmit={handleAddClaim}
                 >
                   <textarea
-                    className="min-h-20 rounded-xl border bg-background px-3 py-2 text-sm"
+                    className="min-h-32 resize-y rounded-xl border bg-background px-3 py-2 text-sm"
                     onChange={(event) => setClaim(event.target.value)}
                     placeholder="Capture a claim in your own words"
                     required
@@ -1113,16 +1149,49 @@ export function ResearchWorkspaceShell({
           <div className="space-y-5">
             <div ref={notesSectionRef}>
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle>Notes</CardTitle>
+                  <div className="flex gap-1 rounded-full bg-muted p-1">
+                    <button
+                      className={
+                        noteTab === "typed"
+                          ? "rounded-full bg-card px-3 py-1.5 text-xs font-semibold shadow-sm"
+                          : "rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground"
+                      }
+                      onClick={() => setNoteTab("typed")}
+                      type="button"
+                    >
+                      Typed
+                    </button>
+                    <button
+                      className={
+                        noteTab === "handwritten"
+                          ? "rounded-full bg-card px-3 py-1.5 text-xs font-semibold shadow-sm"
+                          : "rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground"
+                      }
+                      onClick={() => setNoteTab("handwritten")}
+                      type="button"
+                    >
+                      Handwritten
+                      {initialAttachments.length ? (
+                        <span className="ml-1.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-primary">
+                          {initialAttachments.length}
+                        </span>
+                      ) : null}
+                    </button>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className={noteTab === "typed" ? "block" : "hidden"}>
                     <RichTextNotes
                       initialContent={initialNotesJson}
                       initialText={initialNotes}
                       onChange={handleNotesChange}
                     />
+                  </div>
+                  <div
+                    className={noteTab === "handwritten" ? "block" : "hidden"}
+                  >
                     <HandwrittenNoteUpload
                       attachments={initialAttachments}
                       sessionId={session.id}
@@ -1136,54 +1205,12 @@ export function ResearchWorkspaceShell({
               <Card>
                 <CardHeader>
                   <CardTitle>Reflection</CardTitle>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Capture what you learned, what surprised you, what remains
+                    unclear, and how your confidence changed.
+                  </p>
                 </CardHeader>
                 <CardContent className="grid gap-4">
-                  {focusEnded ? (
-                    <div className="flex flex-col gap-3 rounded-2xl bg-primary/10 p-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="font-semibold">
-                          {session.endedEarly
-                            ? "Focus ended early"
-                            : "Focus complete"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Your notes are safe. Capture what changed in your
-                          understanding.
-                        </p>
-                      </div>
-                      {!session.endedEarly && !session.extensionUsed ? (
-                        <Button
-                          disabled={isPending}
-                          onClick={handleAddFiveMinutes}
-                          type="button"
-                          variant="secondary"
-                        >
-                          <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-                          Add 5 minutes
-                        </Button>
-                      ) : null}
-                    </div>
-                  ) : (
-                    <div
-                      className="flex items-start gap-3 border-l-4 border-primary bg-primary/5 px-4 py-3"
-                      role="note"
-                    >
-                      <Info
-                        className="mt-0.5 h-5 w-5 shrink-0 text-primary"
-                        aria-hidden="true"
-                      />
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">
-                          About reflection
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          Use this section to capture what you learned, what
-                          surprised you, what remains unclear, and how your
-                          confidence changed.
-                        </p>
-                      </div>
-                    </div>
-                  )}
                   <label className="grid gap-2 text-sm font-medium">
                     What did you learn?
                     <textarea
@@ -1256,48 +1283,142 @@ export function ResearchWorkspaceShell({
           </div>
 
           <aside className="space-y-5">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <div className="rounded-3xl border bg-card p-4 shadow-sm shadow-black/5">
+              <div className="flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-sm font-semibold">
                   <CheckCircle2
-                    className="h-5 w-5 text-primary"
                     aria-hidden="true"
+                    className="h-4 w-4 text-primary"
                   />
-                  Session Checklist
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+                  Checklist
+                </h2>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {checklist.filter((item) => item.complete).length}/
+                  {checklist.length}
+                </span>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width]"
+                  style={{
+                    width: `${
+                      (checklist.filter((item) => item.complete).length /
+                        checklist.length) *
+                      100
+                    }%`
+                  }}
+                />
+              </div>
+              <div className="mt-3 space-y-2">
                 {checklist.map((item) => (
                   <div
-                    className="flex items-center gap-3 text-sm"
+                    className="flex items-center gap-2.5 text-sm"
                     key={item.label}
                   >
                     <span
                       aria-hidden="true"
                       className={
                         item.complete
-                          ? "flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground"
-                          : "h-5 w-5 rounded-full border"
+                          ? "flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground"
+                          : "h-4 w-4 rounded-full border"
                       }
                     >
                       {item.complete ? "✓" : null}
                     </span>
-                    {item.label}
+                    <span
+                      className={
+                        item.complete
+                          ? "text-muted-foreground line-through"
+                          : ""
+                      }
+                    >
+                      {item.label}
+                    </span>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-primary" aria-hidden="true" />
-                  AI Coach
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                {aiReview ? (
-                  aiReview.alignment === "needs_revision" ? (
+            {!aiReview ? (
+              <div className="sticky top-5 rounded-3xl border bg-card p-4 shadow-sm shadow-black/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Brain
+                      aria-hidden="true"
+                      className="h-4 w-4 text-primary"
+                    />
+                    <span className="text-sm font-semibold">AI Coach</span>
+                  </div>
+                  <div className="relative">
+                    <button
+                      aria-label="What does AI Coach do?"
+                      className="flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowCoachInfo((prev) => !prev)}
+                      type="button"
+                    >
+                      <Info aria-hidden="true" className="h-4 w-4" />
+                    </button>
+                    {showCoachInfo ? (
+                      <div className="absolute right-0 top-7 z-10 w-64 rounded-xl border bg-card p-3 text-xs leading-5 text-muted-foreground shadow-lg">
+                        Curio checks that your typed or handwritten notes and
+                        supporting claims match the research topic. Aligned work
+                        receives strengths, knowledge gaps, and follow-up
+                        questions; unrelated work is returned for revision.
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                {!focusEnded ? (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Unlocks when focus ends and reflection is complete.
+                  </p>
+                ) : !hasReflection ? (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Complete all three reflection questions to unlock your
+                    review.
+                  </p>
+                ) : null}
+                {aiFailureMessage ? (
+                  <div className="mt-3 border-l-4 border-accent bg-accent/20 px-3 py-2 text-xs text-muted-foreground">
+                    {aiFailureMessage}
+                  </div>
+                ) : null}
+                <Button
+                  className="mt-3 w-full"
+                  disabled={isAiReviewPending || !focusEnded || !hasReflection}
+                  onClick={requestAiReview}
+                  type="button"
+                >
+                  {isAiReviewPending ? (
+                    <LoaderCircle
+                      className="mr-2 h-4 w-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
+                  )}
+                  {isAiReviewPending
+                    ? "Reviewing session…"
+                    : "Generate AI review"}
+                </Button>
+                <p className="mt-2 text-center text-xs text-muted-foreground">
+                  AI feedback is optional. You can finish and save the session
+                  if it is unavailable.
+                </p>
+              </div>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain
+                      className="h-5 w-5 text-primary"
+                      aria-hidden="true"
+                    />
+                    AI Coach
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  {aiReview.alignment === "needs_revision" ? (
                     <>
                       <div className="rounded-2xl border border-accent bg-accent/10 p-4">
                         <p className="flex items-center gap-2 font-semibold">
@@ -1398,59 +1519,10 @@ export function ResearchWorkspaceShell({
                         Refresh review
                       </Button>
                     </>
-                  )
-                ) : (
-                  <>
-                    <p className="leading-6 text-muted-foreground">
-                      Curio first checks that your typed or handwritten notes
-                      and supporting claims match the research topic. Aligned
-                      work receives strengths, knowledge gaps, and follow-up
-                      questions; unrelated work is returned for revision.
-                    </p>
-                    {!focusEnded ? (
-                      <p className="text-xs text-muted-foreground">
-                        AI review unlocks when focus ends.
-                      </p>
-                    ) : !hasReflection ? (
-                      <p className="text-xs text-muted-foreground">
-                        Complete all three reflection questions to unlock your
-                        review.
-                      </p>
-                    ) : null}
-                    {aiFailureMessage ? (
-                      <div className="border-l-4 border-accent bg-accent/20 px-3 py-2 text-muted-foreground">
-                        {aiFailureMessage}
-                      </div>
-                    ) : null}
-                    <Button
-                      className="w-full"
-                      disabled={
-                        isAiReviewPending || !focusEnded || !hasReflection
-                      }
-                      onClick={requestAiReview}
-                      type="button"
-                      variant="secondary"
-                    >
-                      {isAiReviewPending ? (
-                        <LoaderCircle
-                          className="mr-2 h-4 w-4 animate-spin"
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <Sparkles className="mr-2 h-4 w-4" aria-hidden="true" />
-                      )}
-                      {isAiReviewPending
-                        ? "Reviewing session…"
-                        : "Generate AI review"}
-                    </Button>
-                    <p className="text-xs text-muted-foreground">
-                      AI feedback is optional. You can finish and save the
-                      session if it is unavailable.
-                    </p>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </aside>
         </section>
 

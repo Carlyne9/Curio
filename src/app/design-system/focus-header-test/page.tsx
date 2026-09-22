@@ -142,7 +142,7 @@ export default function FocusHeaderTestPage() {
           </div>
 
           {showOnBreak ? (
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <Coffee aria-hidden="true" className="mt-0.5 h-5 w-5 text-primary" />
                 <div>
@@ -154,7 +154,7 @@ export default function FocusHeaderTestPage() {
                 </div>
               </div>
               <button
-                className="rounded-full border px-4 py-2 text-sm font-semibold"
+                className="rounded-full border border-primary bg-transparent px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
                 type="button"
               >
                 Resume focus
