@@ -126,9 +126,7 @@ export default async function WorkspacePage({
       .order("created_at", { ascending: true }),
     supabase
       .from("reflections")
-      .select(
-        "learned, surprised, unclear, confidence_before, confidence_after"
-      )
+      .select("learned, surprised, unclear")
       .eq("session_id", session.id)
       .maybeSingle(),
     supabase
@@ -196,9 +194,7 @@ export default async function WorkspacePage({
           ? {
               learned: reflection.learned,
               surprised: reflection.surprised,
-              unclear: reflection.unclear,
-              confidenceBefore: reflection.confidence_before,
-              confidenceAfter: reflection.confidence_after
+              unclear: reflection.unclear
             }
           : null
       }

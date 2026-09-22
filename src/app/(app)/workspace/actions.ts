@@ -727,9 +727,7 @@ export async function submitReflection(
       session_id: parsed.data.sessionId,
       learned: parsed.data.learned,
       surprised: parsed.data.surprised,
-      unclear: parsed.data.unclear,
-      confidence_before: parsed.data.confidenceBefore,
-      confidence_after: parsed.data.confidenceAfter
+      unclear: parsed.data.unclear
     },
     { onConflict: "session_id" }
   );
@@ -817,9 +815,7 @@ export async function generateAiReview(
       .order("created_at", { ascending: true }),
     supabase
       .from("reflections")
-      .select(
-        "learned, surprised, unclear, confidence_before, confidence_after"
-      )
+      .select("learned, surprised, unclear")
       .eq("session_id", parsed.data.sessionId)
       .maybeSingle(),
     session.topic_id
@@ -889,9 +885,7 @@ export async function generateAiReview(
       reflection: JSON.stringify({
         learned: reflection.learned,
         surprised: reflection.surprised,
-        unclear: reflection.unclear,
-        confidenceBefore: reflection.confidence_before,
-        confidenceAfter: reflection.confidence_after
+        unclear: reflection.unclear
       })
     });
 

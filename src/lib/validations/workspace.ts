@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const sessionIdSchema = z.string().uuid("The research session is invalid.");
+export const sessionIdSchema = z
+  .string()
+  .uuid("The research session is invalid.");
 
 export const sourceSchema = z.object({
   title: z.string().min(1, "Add a source title."),
@@ -15,15 +17,13 @@ export const keyClaimSchema = z.object({
 });
 
 export const reflectionSchema = z.object({
-  learned: z.string().min(1, "Write what you learned."),
+  learned: z.string().min(1, "Write your big takeaway."),
   surprised: z.string().min(1, "Write what surprised you."),
-  unclear: z.string().min(1, "Write what remains unclear."),
-  confidenceBefore: z.number().min(1).max(5),
-  confidenceAfter: z.number().min(1).max(5)
+  unclear: z.string().min(1, "Write what remains unclear.")
 });
 
 export const completeSessionSchema = z.object({
-  sessionId: z.string().uuid(),
+  sessionId: z.string().uuid()
 });
 
 export const notesSchema = z.object({

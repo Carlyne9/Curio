@@ -39,8 +39,6 @@ export type Reflection = {
   learned: string;
   surprised: string;
   unclear: string;
-  confidenceBefore: number;
-  confidenceAfter: number;
 };
 
 export type ResearchSessionReviewInput = {

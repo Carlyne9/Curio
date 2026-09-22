@@ -71,8 +71,6 @@ type ResearchWorkspaceShellProps = {
     learned: string;
     surprised: string;
     unclear: string;
-    confidenceBefore: number;
-    confidenceAfter: number;
   } | null;
   initialSources: Array<{
     id: string;
@@ -157,12 +155,6 @@ export function ResearchWorkspaceShell({
     initialReflection?.surprised ?? ""
   );
   const [unclear, setUnclear] = useState(initialReflection?.unclear ?? "");
-  const [confidenceBefore, setConfidenceBefore] = useState(
-    initialReflection?.confidenceBefore ?? 3
-  );
-  const [confidenceAfter, setConfidenceAfter] = useState(
-    initialReflection?.confidenceAfter ?? 3
-  );
   const [message, setMessage] = useState("Session ready.");
   const [secondsRemaining, setSecondsRemaining] = useState(
     session.durationMinutes * 60
@@ -540,9 +532,7 @@ export function ResearchWorkspaceShell({
         sessionId: session.id,
         learned,
         surprised,
-        unclear,
-        confidenceBefore,
-        confidenceAfter
+        unclear
       });
       setMessage(result.message);
 
@@ -582,9 +572,7 @@ export function ResearchWorkspaceShell({
         sessionId: session.id,
         learned,
         surprised,
-        unclear,
-        confidenceBefore,
-        confidenceAfter
+        unclear
       });
 
       if (!reflectionResult.ok) {
@@ -642,9 +630,7 @@ export function ResearchWorkspaceShell({
         sessionId: session.id,
         learned,
         surprised,
-        unclear,
-        confidenceBefore,
-        confidenceAfter
+        unclear
       });
 
       if (!reflectionResult.ok) {
@@ -664,7 +650,7 @@ export function ResearchWorkspaceShell({
 
   return (
     <main className="min-h-screen px-4 py-5 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-5">
+      <div className="mx-auto grid max-w-[1400px] gap-5">
         <Link
           aria-label="Back to dashboard"
           className="inline-flex h-9 w-9 items-center justify-center rounded-full border text-muted-foreground transition hover:border-primary hover:text-primary"
@@ -815,7 +801,7 @@ export function ResearchWorkspaceShell({
           ) : null}
         </header>
 
-        <section className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
+        <section className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)_280px]">
           <aside className="space-y-5">
             <div ref={sourcesSectionRef}>
               <Card>
@@ -940,10 +926,7 @@ export function ResearchWorkspaceShell({
                       Add the first source you trust.
                     </p>
                   )}
-                  <form
-                    className="grid gap-2 border-t pt-3"
-                    onSubmit={handleAddSource}
-                  >
+                  <form className="grid gap-2" onSubmit={handleAddSource}>
                     <input
                       className="rounded-xl border bg-background px-3 py-2 text-sm"
                       onChange={(event) => setSourceTitle(event.target.value)}
@@ -1098,10 +1081,7 @@ export function ResearchWorkspaceShell({
                     </div>
                   )
                 )}
-                <form
-                  className="grid gap-2 border-t pt-3"
-                  onSubmit={handleAddClaim}
-                >
+                <form className="grid gap-2" onSubmit={handleAddClaim}>
                   <textarea
                     className="min-h-32 resize-y rounded-xl border bg-background px-3 py-2 text-sm"
                     onChange={(event) => setClaim(event.target.value)}
@@ -1206,16 +1186,20 @@ export function ResearchWorkspaceShell({
                 <CardHeader>
                   <CardTitle>Reflection</CardTitle>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Capture what you learned, what surprised you, what remains
-                    unclear, and how your confidence changed.
+                    Capture what surprised you and what remains unclear.
                   </p>
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   <label className="grid gap-2 text-sm font-medium">
-                    What did you learn?
-                    <textarea
-                      className="min-h-24 rounded-2xl border bg-background p-3 font-normal"
+                    Your big takeaway
+                    <span className="text-sm font-normal text-muted-foreground">
+                      If you had to explain this to someone in one sentence,
+                      what would you say?
+                    </span>
+                    <input
+                      className="rounded-xl border bg-background p-3 text-sm font-normal"
                       onChange={(event) => setLearned(event.target.value)}
+                      placeholder="In one sentence…"
                       value={learned}
                     />
                   </label>
@@ -1235,40 +1219,6 @@ export function ResearchWorkspaceShell({
                       value={unclear}
                     />
                   </label>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="grid gap-2 text-sm font-medium">
-                      Confidence before
-                      <select
-                        className="rounded-xl border bg-background px-3 py-2 font-normal"
-                        onChange={(event) =>
-                          setConfidenceBefore(Number(event.target.value))
-                        }
-                        value={confidenceBefore}
-                      >
-                        {[1, 2, 3, 4, 5].map((value) => (
-                          <option key={value} value={value}>
-                            {value} / 5
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="grid gap-2 text-sm font-medium">
-                      Confidence after
-                      <select
-                        className="rounded-xl border bg-background px-3 py-2 font-normal"
-                        onChange={(event) =>
-                          setConfidenceAfter(Number(event.target.value))
-                        }
-                        value={confidenceAfter}
-                      >
-                        {[1, 2, 3, 4, 5].map((value) => (
-                          <option key={value} value={value}>
-                            {value} / 5
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
                   <Button
                     disabled={isPending}
                     onClick={saveReflection}

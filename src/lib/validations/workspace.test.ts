@@ -13,14 +13,12 @@ describe("workspace validation", () => {
     ).toBe(false);
   });
 
-  it("requires all reflection answers and confidence values", () => {
+  it("requires all reflection answers", () => {
     expect(
       reflectionSchema.safeParse({
         learned: "",
         surprised: "A result",
-        unclear: "A question",
-        confidenceBefore: 0,
-        confidenceAfter: 6
+        unclear: "A question"
       }).success
     ).toBe(false);
   });

@@ -344,7 +344,7 @@ export default async function LibrarySessionPage({
           {reflection ? (
             <div className="grid gap-5 md:grid-cols-3">
               {[
-                ["What I learned", reflection.learned],
+                ["Big takeaway", reflection.learned],
                 ["What surprised me", reflection.surprised],
                 ["What remains unclear", reflection.unclear]
               ].map(([label, value]) => (
@@ -355,10 +355,12 @@ export default async function LibrarySessionPage({
                   </p>
                 </div>
               ))}
-              <p className="text-xs text-muted-foreground md:col-span-3">
-                Confidence changed from {reflection.confidence_before}/5 to{" "}
-                {reflection.confidence_after}/5.
-              </p>
+              {reflection.confidence_before && reflection.confidence_after ? (
+                <p className="text-xs text-muted-foreground md:col-span-3">
+                  Confidence changed from {reflection.confidence_before}/5 to{" "}
+                  {reflection.confidence_after}/5.
+                </p>
+              ) : null}
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
